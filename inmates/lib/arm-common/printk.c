@@ -100,6 +100,8 @@ static void console_init(void)
 		chip = &uart_scifa_ops;
 	else if (!strcmp(type, "IMX-UART"))
 		chip = &uart_imx_ops;
+	else if (!strcmp(type, "IMX-LPUART"))
+		chip = &uart_imx_lpuart_ops;
 
 	if (!chip)
 		return;

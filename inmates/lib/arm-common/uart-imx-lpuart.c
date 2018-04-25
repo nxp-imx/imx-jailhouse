@@ -1,10 +1,8 @@
 /*
- * Jailhouse, a Linux-based partitioning hypervisor
- *
- * Copyright (c) OTH Regensburg, 2016
+ * Copyright 2018 NXP
  *
  * Authors:
- *  Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>
+ *  Peng Fan <peng.fan@nxp.com>
  *
  * This work is licensed under the terms of the GNU GPL, version 2.  See
  * the COPYING file in the top-level directory.
@@ -36,26 +34,29 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-struct uart_chip {
-	void *base;
+#include <inmate.h>
+#include <uart.h>
 
-	void *clock_reg;
-	int gate_nr;
+#define UART_DATA		0x1c
+#define UART_STAT		0x14
+#define STAT_TDRE		(1 << 23)
 
-	unsigned int divider;
+static void uart_init(struct uart_chip *chip)
+{
+}
 
-	void (*init)(struct uart_chip*);
-	bool (*is_busy)(struct uart_chip*);
-	void (*write)(struct uart_chip*, char c);
+static bool uart_is_busy(struct uart_chip *chip)
+{
+	return !(mmio_read32(chip->base + UART_STAT) & STAT_TDRE);
+}
+
+static void uart_write(struct uart_chip *chip, char c)
+{
+	mmio_write32(chip->base + UART_DATA, c);
+}
+
+struct uart_chip uart_imx_lpuart_ops = {
+	.init = uart_init,
+	.is_busy = uart_is_busy,
+	.write = uart_write,
 };
-
-extern struct uart_chip uart_jailhouse_ops;
-extern struct uart_chip uart_8250_ops;
-extern struct uart_chip uart_8250_8_ops;
-extern struct uart_chip uart_pl011_ops;
-extern struct uart_chip uart_xuartps_ops;
-extern struct uart_chip uart_mvebu_ops;
-extern struct uart_chip uart_hscif_ops;
-extern struct uart_chip uart_scifa_ops;
-extern struct uart_chip uart_imx_ops;
-extern struct uart_chip uart_imx_lpuart_ops;
