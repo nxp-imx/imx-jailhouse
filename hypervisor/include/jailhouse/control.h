@@ -10,6 +10,9 @@
  * the COPYING file in the top-level directory.
  */
 
+#ifndef _JAILHOUSE_CONTROL_H
+#define _JAILHOUSE_CONTROL_H
+
 #include <asm/bitops.h>
 #include <jailhouse/percpu.h>
 #include <jailhouse/cell.h>
@@ -274,3 +277,5 @@ void __attribute__((noreturn)) arch_panic_stop(void);
 void arch_panic_park(void);
 
 /** @} */
+
+#endif
