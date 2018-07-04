@@ -1,7 +1,7 @@
 /*
  * i.MX8MQ Target
  *
- * Copyright 2017 NXP
+ * Copyright 2017-2018 NXP
  *
  * Authors:
  *  Peng Fan <peng.fan@nxp.com>
@@ -20,8 +20,9 @@
 struct {
 	struct jailhouse_system header;
 	__u64 cpus[1];
-	struct jailhouse_memory mem_regions[4];
+	struct jailhouse_memory mem_regions[5];
 	struct jailhouse_irqchip irqchips[3];
+	struct jailhouse_pci_device pci_devices[2];
 } __attribute__((packed)) config = {
 	.header = {
 		.signature = JAILHOUSE_SYSTEM_SIGNATURE,
@@ -39,6 +40,15 @@ struct {
 				 JAILHOUSE_CON2_TYPE_ROOTPAGE,
 		},
 		.platform_info = {
+			/*
+			 * .pci_mmconfig_base is fixed; if you change it,
+			 * update the value in mach.h
+			 * (PCI_CFG_BASE) and regenerate the inmate library
+			 */
+			.pci_mmconfig_base = 0xbfb00000,
+                        .pci_mmconfig_end_bus = 0x0,
+                        .pci_is_virtual = 1,
+
 			.arm = {
 				.gic_version = 3,
 				.gicd_base = 0x38800000,
@@ -49,9 +59,11 @@ struct {
 		.root_cell = {
 			.name = "imx8mq",
 
+			.num_pci_devices = ARRAY_SIZE(config.pci_devices),
 			.cpu_set_size = sizeof(config.cpus),
 			.num_memory_regions = ARRAY_SIZE(config.mem_regions),
 			.num_irqchips = ARRAY_SIZE(config.irqchips),
+			.vpci_irq_base = 56, /* Not include 32 base */
 		},
 	},
 
@@ -70,13 +82,25 @@ struct {
 		/* RAM */ {
 			.phys_start = 0x40000000,
 			.virt_start = 0x40000000,
-			.size = 0xbfb00000,
+			.size = 0x7fb00000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_EXECUTE,
 		},
-		/* IVSHMEM shared memory region for 00:00.0 */ {
-			.phys_start = 0xffb00000,
-			.virt_start = 0xffb00000,
+		/* IVHSMEM shared memory region for 00:00.0 */ {
+			.phys_start = 0xbfe00000,
+			.virt_start = 0xbfe00000,
+			.size = 0x1000,
+			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE ,
+		},
+		/* IVHSMEM shared memory region for 00:01.0 */ {
+			.phys_start = 0xbfd00000,
+			.virt_start = 0xbfd00000,
+			.size = 0x1000,
+			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE ,
+		},
+		/* gic/ivshmem-inmate */ {
+			.phys_start = 0xffaf0000,
+			.virt_start = 0xffaf0000,
 			.size = 0x100000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE,
 		},
@@ -103,6 +127,37 @@ struct {
 			.pin_bitmap = {
 				0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
 			},
+		},
+	},
+
+	.pci_devices = {
+		{
+			.type = JAILHOUSE_PCI_TYPE_IVSHMEM,
+			.bdf = 0x0 << 3,
+			.bar_mask = {
+				0xffffff00, 0xffffffff, 0x00000000,
+				0x00000000, 0x00000000, 0x00000000,
+			},
+			
+			/*num_msix_vectors needs to be 0 for INTx operation*/
+			.num_msix_vectors = 0,
+			.shmem_region = 2,
+			.shmem_protocol = JAILHOUSE_SHMEM_PROTO_UNDEFINED,
+			.domain = 0x0,
+		},
+		{
+			.type = JAILHOUSE_PCI_TYPE_IVSHMEM,
+			.bdf = 0x1 << 3,
+			.bar_mask = {
+				0xffffff00, 0xffffffff, 0x00000000,
+				0x00000000, 0x00000000, 0x00000000,
+			},
+			
+			/*num_msix_vectors needs to be 0 for INTx operation*/
+			.num_msix_vectors = 0,
+			.shmem_region = 3,
+			.shmem_protocol = JAILHOUSE_SHMEM_PROTO_UNDEFINED,
+			.domain = 0x0,
 		},
 	},
 };
