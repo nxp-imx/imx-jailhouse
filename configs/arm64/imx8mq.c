@@ -20,7 +20,7 @@
 struct {
 	struct jailhouse_system header;
 	__u64 cpus[1];
-	struct jailhouse_memory mem_regions[5];
+	struct jailhouse_memory mem_regions[6];
 	struct jailhouse_irqchip irqchips[3];
 	struct jailhouse_pci_device pci_devices[2];
 } __attribute__((packed)) config = {
@@ -46,8 +46,8 @@ struct {
 			 * (PCI_CFG_BASE) and regenerate the inmate library
 			 */
 			.pci_mmconfig_base = 0xbfb00000,
-                        .pci_mmconfig_end_bus = 0x0,
-                        .pci_is_virtual = 1,
+			.pci_mmconfig_end_bus = 0x0,
+			.pci_is_virtual = 1,
 
 			.arm = {
 				.gic_version = 3,
@@ -98,11 +98,19 @@ struct {
 			.size = 0x1000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE ,
 		},
-		/* gic/ivshmem-inmate */ {
-			.phys_start = 0xffaf0000,
-			.virt_start = 0xffaf0000,
+		/* Linux Loader */{
+			.phys_start = 0xbff00000,
+			.virt_start = 0xbff00000,
 			.size = 0x100000,
-			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE,
+			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
+				JAILHOUSE_MEM_EXECUTE,
+		},
+		/* Inmate memory */{
+			.phys_start = 0xc0000000,
+			.virt_start = 0xc0000000,
+			.size = 0x3fc00000,
+			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
+				JAILHOUSE_MEM_EXECUTE,
 		},
 	},
 
