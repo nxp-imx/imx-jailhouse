@@ -54,7 +54,7 @@ static void gic_v3_enable(unsigned int irqn)
 		mmio_write32(GICR_V3_BASE + GICR_SGI_BASE + GICR_ISENABLER,
 			     1 << irqn);
 	else if (is_spi(irqn))
-		mmio_write32(GICD_V3_BASE + GICD_ISENABLER + irqn / 32,
+		mmio_write32(GICD_V3_BASE + GICD_ISENABLER + (irqn / 32) * 4,
 			     1 << (irqn % 32));
 }
 
