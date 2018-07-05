@@ -13,3 +13,11 @@
 #define IS_SIP_64(hvc)			(((hvc) >> 24) == 0xc2)
 
 #define SIP_NOT_SUPPORTED		(-1)
+
+struct trap_context;
+
+long sip_dispatch(struct trap_context *ctx);
+unsigned long call_smcc64(unsigned long fid, unsigned long a0,
+			  unsigned long a1, unsigned long a2, unsigned long a3,
+			  unsigned long a4, unsigned long a5,
+			  unsigned long *ret);

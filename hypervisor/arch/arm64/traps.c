@@ -33,6 +33,11 @@ void arch_skip_instruction(struct trap_context *ctx)
 	arm_write_sysreg(ELR_EL2, pc);
 }
 
+long __attribute__((weak)) sip_dispatch(struct trap_context *ctx)
+{
+	return SIP_NOT_SUPPORTED;
+}
+
 static int handle_smc(struct trap_context *ctx)
 {
 	unsigned long *regs = ctx->regs;
@@ -40,8 +45,7 @@ static int handle_smc(struct trap_context *ctx)
 	if (IS_PSCI_32(regs[0]) || IS_PSCI_64(regs[0])) {
 		regs[0] = psci_dispatch(ctx);
 	} else if (IS_SIP_32(regs[0]) || IS_SIP_64(regs[0])) {
-		/* This can be ignored */
-		regs[0] = SIP_NOT_SUPPORTED;
+		regs[0] = sip_dispatch(ctx);
 	} else {
 		return TRAP_UNHANDLED;
 	}
