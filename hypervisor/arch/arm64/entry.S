@@ -84,18 +84,15 @@ arch_entry:
 	str	x15, [x0, #HEADER_DEBUG_CONSOLE_VIRT]
 
 	/*
-	 * Note 1: After turning MMU off the CPU can start bypassing caches.
-	 * But cached before data is kept in caches either until the CPU turns
-	 * MMU on again or other coherent agents move cached data out. That's
-	 * why there is no need to clean D-cache before turning MMU off.
-	 *
-	 * Note 2: We don't have to clean D-cache to protect against malicious
-	 * guests, which can execute 'dc isw' (data or unified Cache line
-	 * Invalidate by Set/Way) because when virtualization is enabled
-	 * (HCR_EL2.VM == 1) then HW automatically upgrade 'dc isw' to
-	 * 'dc cisw' (Clean + Invalidate). Executing Clean operation before
-	 * Invalidate is safe in guests.
+	 * When switch to EL2 using hvc #0, before MMU is enabled,
+	 * some data is still kept in D-cache, such as the hypervisor
+	 * core code. Then in EL2, beforem MMU is enabled, CPU
+	 * might get wrong instruction or even abort.
 	 */
+	adrp	x0, hypervisor_header
+	ldr	x1, [x0, #HEADER_CORE_SIZE]
+	mov	x2, DCACHE_CLEAN_AND_INVALIDATE_ASM
+	bl	arm_dcaches_flush
 
 	/* install bootstrap_vectors */
 	ldr	x1, =bootstrap_vectors
