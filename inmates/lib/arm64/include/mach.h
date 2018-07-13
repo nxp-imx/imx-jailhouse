@@ -124,6 +124,31 @@
 #define PCI_CFG_BASE	0xbfb00000
 #define PCI_CFG_SIZE	0x100000
 
+#elif defined(CONFIG_MACH_IMX8)
+#define CON_TYPE	"IMX-LPUART"
+#define CON_BASE	0x5a060000
+
+#define GIC_VERSION	3
+#define GICD_V3_BASE	((void *)0x51a00000)
+
+/*
+ * Note: The GICR_V3_BASE needs to be CPU0/1/2/3 specific
+ * If the gic-demo use CPU3, then the GICR_V3_BASE needs to be CPU3 GICR
+ * Address is 0x51b00000 + x * 2 * 64K
+ */
+#define GICR_V3_BASE   ((void *)0x51b60000)    /* CPU 3 */
+
+/*
+ * Note: Alought the PCI_CFG_SIZE is 1MB, but need to reserve 2M in root cell
+ * The following 1M is for PCI BAR, take care the bar not to conflict with
+ * other memory regions.
+ */
+#define PCI_CFG_BASE	0xff700000
+#define PCI_CFG_SIZE	0x100000
+
+/* Interrupt 122 is not used by others */
+#define IVSHMEM_IRQ	(90 + 32)
+
 #endif
 
 #ifndef TIMER_IRQ
