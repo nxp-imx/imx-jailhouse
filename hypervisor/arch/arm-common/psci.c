@@ -68,6 +68,25 @@ static long psci_emulate_affinity_info(struct per_cpu *cpu_data,
 		PSCI_CPU_IS_OFF : PSCI_CPU_IS_ON;
 }
 
+static long psci_emulate_features_info(struct trap_context *ctx)
+{
+	switch (ctx->regs[1]) {
+	case PSCI_VERSION:
+	case PSCI_CPU_SUSPEND_32:
+	case PSCI_CPU_SUSPEND_64:
+	case PSCI_CPU_OFF:
+	case PSCI_CPU_ON_32:
+	case PSCI_CPU_ON_64:
+	case PSCI_AFFINITY_INFO_32:
+	case PSCI_AFFINITY_INFO_64:
+	case PSCI_FEATURES:
+		return PSCI_SUCCESS;
+
+	default:
+		return PSCI_NOT_SUPPORTED;
+	}
+}
+
 long psci_dispatch(struct trap_context *ctx)
 {
 	struct per_cpu *cpu_data = this_cpu_data();
@@ -77,8 +96,7 @@ long psci_dispatch(struct trap_context *ctx)
 
 	switch (function_id) {
 	case PSCI_VERSION:
-		/* Major[31:16], minor[15:0] */
-		return 2;
+		return PSCI_VERSION_1_1;
 
 	case PSCI_CPU_SUSPEND_32:
 	case PSCI_CPU_SUSPEND_64:
@@ -101,6 +119,9 @@ long psci_dispatch(struct trap_context *ctx)
 	case PSCI_AFFINITY_INFO_32:
 	case PSCI_AFFINITY_INFO_64:
 		return psci_emulate_affinity_info(cpu_data, ctx);
+
+	case PSCI_FEATURES:
+		return psci_emulate_features_info(ctx);
 
 	default:
 		return PSCI_NOT_SUPPORTED;
