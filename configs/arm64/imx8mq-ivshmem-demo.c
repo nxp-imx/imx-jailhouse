@@ -18,9 +18,9 @@
 struct {
 	struct jailhouse_cell_desc cell;
 	__u64 cpus[1];
-	struct jailhouse_memory mem_regions[5];
+	struct jailhouse_memory mem_regions[4];
 	struct jailhouse_irqchip irqchips[1];
-	struct jailhouse_pci_device pci_devices[2];
+	struct jailhouse_pci_device pci_devices[1];
 } __attribute__((packed)) config = {
 	.cell = {
 		.signature = JAILHOUSE_CELL_DESC_SIGNATURE,
@@ -56,16 +56,9 @@ struct {
 				JAILHOUSE_MEM_EXECUTE | JAILHOUSE_MEM_LOADABLE,
 		},
 		/* IVSHMEM */ {
-			.phys_start = 0xbfe00000,
-			.virt_start = 0xbfe00000,
-			.size = 0x001000,
-			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
-				JAILHOUSE_MEM_ROOTSHARED,
-		},
-		/* IVSHMEM */ {
 			.phys_start = 0xbfd00000,
 			.virt_start = 0xbfd00000,
-			.size = 0x001000,
+			.size = 0x200000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_ROOTSHARED,
 		},
@@ -82,7 +75,7 @@ struct {
 			.address = 0x38800000,
 			.pin_base = 128,
 			.pin_bitmap = {
-				0x3 << (109 + 32 - 128) /* SPI 109 - 110 */
+				0x1 << (109 + 32 - 128) /* SPI 109 */
 			},
 		},
 	},
@@ -99,20 +92,6 @@ struct {
 			/*num_msix_vectors needs to be 0 for INTx operation*/
 			.num_msix_vectors = 0,
 			.shmem_region = 2,
-			.shmem_protocol = JAILHOUSE_SHMEM_PROTO_UNDEFINED,
-			.domain = 0x0,
-		},
-		{
-			.type = JAILHOUSE_PCI_TYPE_IVSHMEM,
-			.bdf = 0x1 << 3,
-			.bar_mask = {
-				0xffffff00, 0xffffffff, 0x00000000,
-				0x00000000, 0x00000000, 0x00000000,
-			},
-			
-			/*num_msix_vectors needs to be 0 for INTx operation*/
-			.num_msix_vectors = 0,
-			.shmem_region = 3,
 			.shmem_protocol = JAILHOUSE_SHMEM_PROTO_UNDEFINED,
 			.domain = 0x0,
 		},

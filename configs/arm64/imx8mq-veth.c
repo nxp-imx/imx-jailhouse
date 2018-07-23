@@ -595,11 +595,11 @@ struct {
 				0xffffff00, 0xffffffff, 0x00000000,
 				0x00000000, 0x00000000, 0x00000000,
 			},
-			
+
 			/*num_msix_vectors needs to be 0 for INTx operation*/
 			.num_msix_vectors = 0,
 			.shmem_region = 67,
-			.shmem_protocol = JAILHOUSE_SHMEM_PROTO_UNDEFINED,
+			.shmem_protocol = JAILHOUSE_SHMEM_PROTO_VETH,
 			.domain = 0x0,
 		},
 	},
