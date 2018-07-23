@@ -18,8 +18,9 @@
 struct {
 	struct jailhouse_cell_desc cell;
 	__u64 cpus[1];
-	struct jailhouse_memory mem_regions[7];
-	struct jailhouse_irqchip irqchips[1];
+	struct jailhouse_memory mem_regions[8];
+	struct jailhouse_irqchip irqchips[2];
+	struct jailhouse_pci_device pci_devices[1];
 } __attribute__((packed)) config = {
 	.cell = {
 		.signature = JAILHOUSE_CELL_DESC_SIGNATURE,
@@ -30,8 +31,9 @@ struct {
 		.cpu_set_size = sizeof(config.cpus),
 		.num_memory_regions = ARRAY_SIZE(config.mem_regions),
 		.num_irqchips = ARRAY_SIZE(config.irqchips),
+		.num_pci_devices = ARRAY_SIZE(config.pci_devices),
+		.vpci_irq_base = 109, /* Not include 32 base */
 		.pio_bitmap_size = 0,
-		.num_pci_devices = 0,
 	},
 
 	.cpus = {
@@ -67,6 +69,13 @@ struct {
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_IO | JAILHOUSE_MEM_ROOTSHARED,
 		},
+		/* IVSHMEM */ {
+			.phys_start = 0xbfd00000,
+			.virt_start = 0xbfd00000,
+			.size = 0x00200000,
+			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
+				JAILHOUSE_MEM_ROOTSHARED,
+		},
 		/* RAM: Top at 4GB Space */ {
 			.phys_start = 0xbfff0000,
 			.virt_start = 0,
@@ -91,12 +100,36 @@ struct {
 	},
 
 	.irqchips = {
-		/* uart2 */ {
+		/* uart2/sdhc1 */ {
 			.address = 0x38800000,
 			.pin_base = 32,
 			.pin_bitmap = {
 				(1 << (27 + 32 - 32)) | (1 << (22 + 32 - 32))
 			},
+		},
+		/* IVSHMEM */ {
+			.address = 0x38800000,
+			.pin_base = 128,
+			.pin_bitmap = {
+				0x1 << (109 + 32 - 128) /* SPI 109 */
+			},
+		},
+	},
+
+	.pci_devices = {
+		{
+			.type = JAILHOUSE_PCI_TYPE_IVSHMEM,
+			.bdf = 0x0 << 3,
+			.bar_mask = {
+				0xffffff00, 0xffffffff, 0x00000000,
+				0x00000000, 0x00000000, 0x00000000,
+			},
+
+			/*num_msix_vectors needs to be 0 for INTx operation*/
+			.num_msix_vectors = 0,
+			.shmem_region = 4,
+			.shmem_protocol = JAILHOUSE_SHMEM_PROTO_VETH,
+			.domain = 0x0,
 		},
 	},
 };
