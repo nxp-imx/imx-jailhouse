@@ -154,7 +154,7 @@ struct {
 			/*num_msix_vectors needs to be 0 for INTx operation*/
 			.num_msix_vectors = 0,
 			.shmem_region = 3,
-			.shmem_protocol = JAILHOUSE_SHMEM_PROTO_UNDEFINED,
+			.shmem_protocol = JAILHOUSE_SHMEM_PROTO_VETH,
 			.domain = 0x0,
 		},
 	},
