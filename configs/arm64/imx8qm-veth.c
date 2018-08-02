@@ -21,6 +21,7 @@ struct {
 	struct jailhouse_memory mem_regions[6];
 	struct jailhouse_irqchip irqchips[3];
 	struct jailhouse_pci_device pci_devices[1];
+	struct jailhouse_smmu_sid smmu_sids[3];
 } __attribute__((packed)) config = {
 	.header = {
 		.signature = JAILHOUSE_SYSTEM_SIGNATURE,
@@ -52,6 +53,15 @@ struct {
 				.gicd_base = 0x51a00000,
 				.gicr_base = 0x51b00000,
 				.maintenance_irq = 25,
+				.iommu_units = {
+					{
+						.base = 0x51400000,
+						.size = 0x40000,
+						.arm_sid_mask = 0x7f80,
+						.arm_smmu_arch = ARM_SMMU_V2,
+						.arm_smmu_impl = ARM_MMU500,
+					},
+				},
 			},
 		},
 
@@ -61,6 +71,7 @@ struct {
 			.num_pci_devices = ARRAY_SIZE(config.pci_devices),
 			.cpu_set_size = sizeof(config.cpus),
 			.num_memory_regions = ARRAY_SIZE(config.mem_regions),
+			.num_smmu_sids = ARRAY_SIZE(config.smmu_sids),
 			.num_irqchips = ARRAY_SIZE(config.irqchips),
 			/*
 			 * 118/119 is not used by others, vpci_irq_base not
@@ -156,6 +167,21 @@ struct {
 			.shmem_region = 3,
 			.shmem_protocol = JAILHOUSE_SHMEM_PROTO_VETH,
 			.domain = 0x0,
+		},
+	},
+
+	.smmu_sids = {
+		{
+			.sid = 0x11,
+			.sid_mask = 0x7f80,
+		},
+		{
+			.sid = 0x12,
+			.sid_mask = 0x7f80,
+		},
+		{
+			.sid = 0x13,
+			.sid_mask = 0x7f80,
 		},
 	},
 };
