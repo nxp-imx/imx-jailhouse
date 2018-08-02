@@ -112,6 +112,11 @@ static inline void mmio_write32(void *address, u32 value)
 	*(volatile u32 *)address = value;
 }
 
+static inline void mmio_write64(void *address, u64 value)
+{
+	*(volatile u64 *)address = value;
+}
+
 static inline void __attribute__((noreturn)) halt(void)
 {
 	while (1)
