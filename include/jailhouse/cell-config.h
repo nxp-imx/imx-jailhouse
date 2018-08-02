@@ -76,6 +76,7 @@ struct jailhouse_cell_desc {
 	__u32 num_pci_caps;
 
 	__u32 vpci_irq_base;
+	__u32 num_smmu_sids;
 
 	__u64 cpu_reset_address;
 	__u64 msg_reply_timeout;
@@ -126,6 +127,11 @@ struct jailhouse_irqchip {
 	__u32 id;
 	__u32 pin_base;
 	__u32 pin_bitmap[4];
+} __attribute__((packed));
+
+struct jailhouse_smmu_sid {
+	__u32 sid;
+	__u32 sid_mask;
 } __attribute__((packed));
 
 #define JAILHOUSE_PCI_TYPE_DEVICE	0x01
@@ -180,6 +186,9 @@ struct jailhouse_iommu {
 	__u8 amd_base_cap;
 	__u8 amd_msi_cap;
 	__u32 amd_features;
+	__u32 arm_sid_mask;
+	__u32 arm_smmu_arch;
+	__u32 arm_smmu_impl;
 } __attribute__((packed));
 
 /* Bits 0..3 are used to select the particular driver */
@@ -215,6 +224,17 @@ struct jailhouse_iommu {
 #define JAILHOUSE_CON2_TYPE_MASK	0x0f00
 
 #define CON2_TYPE(flags) ((flags) & JAILHOUSE_CON2_TYPE_MASK)
+
+enum arm_smmu_arch_version {
+	ARM_SMMU_V1,
+	ARM_SMMU_V1_64K,
+	ARM_SMMU_V2,
+};
+
+enum arm_smmu_implementation {
+	GENERIC_SMMU,
+	ARM_MMU500,
+};
 
 struct jailhouse_debug_console {
 	__u64 address;
@@ -261,6 +281,8 @@ struct jailhouse_system {
 				u64 gich_base;
 				u64 gicv_base;
 				u64 gicr_base;
+				struct jailhouse_iommu
+					iommu_units[JAILHOUSE_MAX_IOMMU_UNITS];
 			} __attribute__((packed)) arm;
 		} __attribute__((packed));
 	} __attribute__((packed)) platform_info;
@@ -277,7 +299,8 @@ jailhouse_cell_config_size(struct jailhouse_cell_desc *cell)
 		cell->num_irqchips * sizeof(struct jailhouse_irqchip) +
 		cell->pio_bitmap_size +
 		cell->num_pci_devices * sizeof(struct jailhouse_pci_device) +
-		cell->num_pci_caps * sizeof(struct jailhouse_pci_capability);
+		cell->num_pci_caps * sizeof(struct jailhouse_pci_capability) +
+		cell->num_smmu_sids * sizeof(struct jailhouse_smmu_sid);
 }
 
 static inline __u32
@@ -338,6 +361,14 @@ jailhouse_cell_pci_caps(const struct jailhouse_cell_desc *cell)
 	return (const struct jailhouse_pci_capability *)
 		((void *)jailhouse_cell_pci_devices(cell) +
 		 cell->num_pci_devices * sizeof(struct jailhouse_pci_device));
+}
+
+static inline const struct jailhouse_smmu_sid *
+jailhouse_cell_sid(const struct jailhouse_cell_desc *cell)
+{
+	return (const struct jailhouse_smmu_sid *)
+		((void *)jailhouse_cell_pci_caps(cell) +
+		 cell->num_pci_caps * sizeof(struct jailhouse_pci_capability));
 }
 
 #endif /* !_JAILHOUSE_CELL_CONFIG_H */

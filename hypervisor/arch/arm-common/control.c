@@ -15,6 +15,7 @@
 #include <jailhouse/control.h>
 #include <jailhouse/printk.h>
 #include <asm/control.h>
+#include <asm/iommu.h>
 #include <asm/psci.h>
 
 static void enter_cpu_off(struct per_cpu *cpu_data)
@@ -243,6 +244,7 @@ void arch_flush_cell_vcpu_caches(struct cell *cell)
 
 void arch_config_commit(struct cell *cell_added_removed)
 {
+	iommu_config_commit(cell_added_removed);
 	irqchip_config_commit(cell_added_removed);
 }
 
@@ -258,4 +260,5 @@ void arch_panic_park(void) __attribute__((alias("arm_cpu_park")));
 
 void arch_prepare_shutdown(void)
 {
+	iommu_prepare_shutdown();
 }
