@@ -721,6 +721,11 @@ static int arm_smmu_init(void)
 	smmu->features &= ~ARM_SMMU_FEAT_COHERENT_WALK;
 
 	phys_addr = system_config->platform_info.arm.iommu_units[0].base;
+	if (!phys_addr) {
+		printk("No SMMU\n");
+		return 0;
+	}
+
 	size = system_config->platform_info.arm.iommu_units[0].size;
 
 	smmu->version =
@@ -922,6 +927,9 @@ static void arm_smmu_cell_exit(struct cell *cell)
 	unsigned int n;
 	int ret, idx;
 	int cbndx = cell->config->id;
+
+	if (!cell->config->num_smmu_sids)
+		return;
 
 	/* If no sids, ignore */
 	if (cell->config->num_smmu_sids) {
