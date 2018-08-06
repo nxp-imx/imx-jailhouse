@@ -103,6 +103,27 @@
 #define GICD_V3_BASE	((void *)0x08000000)
 #define GICR_V3_BASE	((void *)0x08100000)	/* CPU 3 */
 
+#elif defined(CONFIG_MACH_IMX8MM)
+#define CON_TYPE	"IMX-UART"
+#define CON_BASE	0x30890000
+
+#define GIC_VERSION	3
+#define GICD_V3_BASE	((void *)0x38800000)
+/*
+ * Note: The GICR_V3_BASE address is core-specific.
+ * Address is 0x38880000 + x * 2 * 64K
+ */
+#define GICR_V3_BASE	((void *)0x388e0000)	/* CPU 3 */
+
+#define IVSHMEM_IRQ	(76 + 32)
+/*
+ * Note: Alought the PCI_CFG_SIZE is 1MB, but need to reserve 2M in root cell
+ * The following 1M is for PCI BAR, take care the bar not to conflict with
+ * other memory regions.
+ */
+#define PCI_CFG_BASE	0x7fb00000
+#define PCI_CFG_SIZE	0x100000
+
 #elif defined(CONFIG_MACH_IMX8MQ)
 #define CON_TYPE	"IMX-UART"
 #define CON_BASE	0x30860000
