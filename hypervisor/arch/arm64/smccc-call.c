@@ -10,7 +10,7 @@
  * the COPYING file in the top-level directory.
  */
 
-#include <asm/sip.h>
+#include <asm/smccc.h>
 
 unsigned long call_smcc64(unsigned long fid, unsigned long a0,
 			  unsigned long a1, unsigned long a2,

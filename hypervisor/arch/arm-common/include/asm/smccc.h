@@ -10,6 +10,8 @@
  * the COPYING file in the top-level directory.
  */
 
+#include <asm/traps.h>
+
 #define SMCCC_VERSION			0x80000000
 #define SMCCC_ARCH_FEATURES		0x80000001
 
@@ -34,3 +36,8 @@
 #define SMCCC_IS_CONV_64(function_id)	!!(function_id & (1 << 30))
 
 int handle_smc(struct trap_context *ctx);
+long sip_dispatch(struct trap_context *ctx);
+unsigned long call_smcc64(unsigned long fid, unsigned long a0,
+			  unsigned long a1, unsigned long a2, unsigned long a3,
+			  unsigned long a4, unsigned long a5,
+			  unsigned long *ret);

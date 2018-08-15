@@ -30,6 +30,11 @@ static long handle_arch(struct trap_context *ctx)
 	}
 }
 
+long __attribute__((weak)) sip_dispatch(struct trap_context *ctx)
+{
+	return ARM_SMCCC_NOT_SUPPORTED;
+}
+
 int handle_smc(struct trap_context *ctx)
 {
 	unsigned long *regs = ctx->regs;
@@ -40,7 +45,7 @@ int handle_smc(struct trap_context *ctx)
 		break;
 
 	case ARM_SMCCC_OWNER_SIP:
-		regs[0] = ARM_SMCCC_NOT_SUPPORTED;
+		regs[0] = sip_dispatch(ctx);
 		break;
 
 	case ARM_SMCCC_OWNER_STANDARD:
