@@ -11,7 +11,7 @@
  */
 
 #include <jailhouse/printk.h>
-#include <asm/sip.h>
+#include <asm/smccc.h>
 #include <asm/traps.h>
 
 #define	FSL_SIP_GPC			0xC2000000
@@ -37,7 +37,7 @@ long sip_dispatch(struct trap_context *ctx)
 	}
 
 	if (!sip_allow)
-		return SIP_NOT_SUPPORTED;
+		return ARM_SMCCC_NOT_SUPPORTED;
 
 	call_smcc64(ctx->regs[0], ctx->regs[1], ctx->regs[2], ctx->regs[3],
 		    ctx->regs[4], ctx->regs[5], ctx->regs[6], ret);
