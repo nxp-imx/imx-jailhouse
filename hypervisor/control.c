@@ -656,6 +656,10 @@ static int cell_start(struct per_cpu *cpu_data, unsigned long id)
 		comm_region->flags |= JAILHOUSE_COMM_FLAG_DBG_PUTC_ACTIVE;
 	comm_region->console = cell->config->console;
 
+	comm_region->pci_cfg_base = cell->config->pci_cfg_base;
+	comm_region->pci_cfg_size = cell->config->pci_cfg_size;
+	comm_region->ivshmem_irq = cell->config->ivshmem_irq;
+
 	pci_cell_reset(cell);
 	arch_cell_reset(cell);
 

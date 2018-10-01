@@ -101,6 +101,11 @@ struct jailhouse_cell_desc {
 	__u64 cpu_reset_address;
 	__u64 msg_reply_timeout;
 
+	/* ivshmem */
+	__u64 pci_cfg_base;
+	__u64 pci_cfg_size;
+	__u32 ivshmem_irq;
+
 	struct jailhouse_console console;
 } __attribute__((packed));
 

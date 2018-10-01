@@ -40,4 +40,7 @@
 	__u8 gic_version;			\
 	__u64 gicd_base;			\
 	__u64 gicc_base;			\
-	__u64 gicr_base;
+	__u64 gicr_base;			\
+	__u64 pci_cfg_base;			\
+	__u64 pci_cfg_size;			\
+	__u32 ivshmem_irq;
