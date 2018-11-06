@@ -121,7 +121,7 @@
  * The following 1M is for PCI BAR, take care the bar not to conflict with
  * other memory regions.
  */
-#define PCI_CFG_BASE	0x7fb00000
+#define PCI_CFG_BASE	0xbb800000
 #define PCI_CFG_SIZE	0x100000
 
 #elif defined(CONFIG_MACH_IMX8MQ)

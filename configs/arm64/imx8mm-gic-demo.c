@@ -46,7 +46,7 @@ struct {
 				JAILHOUSE_MEM_IO | JAILHOUSE_MEM_ROOTSHARED,
 		},
 		/* RAM: Top at 4GB Space */ {
-			.phys_start = 0xbfaf0000,
+			.phys_start = 0xbbc00000,
 			.virt_start = 0,
 			.size = 0x00010000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |

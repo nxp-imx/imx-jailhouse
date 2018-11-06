@@ -20,7 +20,7 @@
 struct {
 	struct jailhouse_system header;
 	__u64 cpus[1];
-	struct jailhouse_memory mem_regions[17];
+	struct jailhouse_memory mem_regions[6];
 	struct jailhouse_irqchip irqchips[3];
 	struct jailhouse_pci_device pci_devices[1];
 } __attribute__((packed)) config = {
@@ -45,7 +45,7 @@ struct {
 			 * update the value in mach.h
 			 * (PCI_CFG_BASE) and regenerate the inmate library
 			 */
-			.pci_mmconfig_base = 0x7fb00000,
+			.pci_mmconfig_base = 0xbb800000,
 			.pci_mmconfig_end_bus = 0,
 			.pci_is_virtual = 1,
 
@@ -72,121 +72,43 @@ struct {
 	},
 
 	.mem_regions = {
-		/* TCML */ {
-			.phys_start = 0x007e0000,
-			.virt_start = 0x007e0000,
-			.size =	      0x40000,
-			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
-				JAILHOUSE_MEM_IO,
-		},
-		/* OCRAM */ {
-			.phys_start = 0x00900000,
-			.virt_start = 0x00900000,
-			.size =	      0x40000,
-			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
-				JAILHOUSE_MEM_IO,
-		},
-		/* QSPI1 */ {
-			.phys_start = 0x08000000,
-			.virt_start = 0x08000000,
-			.size =	      0x10000000,
-			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
-				JAILHOUSE_MEM_IO,
-		},
-		/* PCIE */ {
-			.phys_start = 0x18000000,
-			.virt_start = 0x18000000,
-			.size =	      0x08000000,
-			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
-				JAILHOUSE_MEM_IO,
-		},
-		/* AIPS1 */ {
-			.phys_start = 0x30000000,
-			.virt_start = 0x30000000,
-			.size =	      0x400000,
-			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
-				JAILHOUSE_MEM_IO,
-		},
-		/* AIPS2 */ {
-			.phys_start = 0x30400000,
-			.virt_start = 0x30400000,
-			.size =	      0x400000,
-			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
-				JAILHOUSE_MEM_IO,
-		},
-		/* AIPS3 */ {
-			.phys_start = 0x30800000,
-			.virt_start = 0x30800000,
-			.size =	      0x400000,
-			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
-				JAILHOUSE_MEM_IO,
-		},
-		/* AIPS4 */ {
-			.phys_start = 0x32c00000,
-			.virt_start = 0x32c00000,
-			.size =	      0x400000,
-			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
-				JAILHOUSE_MEM_IO,
-		},
-		/* APBH */ {
-			.phys_start = 0x33000000,
-			.virt_start = 0x33000000,
-			.size =	      0x8000,
-			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
-				JAILHOUSE_MEM_IO,
-		},
-		/* QSPI TX */ {
-			.phys_start = 0x33008000,
-			.virt_start = 0x33008000,
-			.size =	      0x8000,
-			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
-				JAILHOUSE_MEM_IO,
-		},
-		/* QSPI RX */ {
-			.phys_start = 0x34000000,
-			.virt_start = 0x34000000,
-			.size =	      0x2000000,
-			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
-				JAILHOUSE_MEM_IO,
-		},
-		/* GPU REG */ {
-			.phys_start = 0x38000000,
-			.virt_start = 0x38000000,
-			.size =	      0x00010000,
-			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
-				JAILHOUSE_MEM_IO,
-		},
-		/* DDR PERF */ {
-			.phys_start = 0x3d800000,
-			.virt_start = 0x3d800000,
-			.size = 0x00400000,
+		/* IO */ {
+			.phys_start = 0x00000000,
+			.virt_start = 0x00000000,
+			.size =	      0x40000000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_IO,
 		},
 		/* RAM */ {
 			.phys_start = 0x40000000,
 			.virt_start = 0x40000000,
-			.size = 0x3fb00000,
+			.size = 0x7b700000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_EXECUTE,
 		},
-		/* IVHSMEM shared memory region for 00:00.0 */ {
-			.phys_start = 0x7fd00000,
-			.virt_start = 0x7fd00000,
-			.size = 0x200000,
-			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE ,
-		},
-		/* Linux Loader */{
-			.phys_start = 0x7ff00000,
-			.virt_start = 0x7ff00000,
+		/* Loader */{
+			.phys_start = 0xbb700000,
+			.virt_start = 0xbb700000,
 			.size = 0x100000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_EXECUTE,
 		},
+		/* IVHSMEM shared memory region for 00:00.0 */ {
+			.phys_start = 0xbba00000,
+			.virt_start = 0xbba00000,
+			.size = 0x100000,
+			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE ,
+		},
+		/* IVHSMEM shared memory region for 00:00.0 */ {
+			.phys_start = 0xbbb00000,
+			.virt_start = 0xbbb00000,
+			.size = 0x100000,
+			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE ,
+		},
 		/* Inmate memory */{
-			.phys_start = 0x80000000,
-			.virt_start = 0x80000000,
-			.size = 0x3fc00000,
+			.phys_start = 0xbbc00000,
+			.virt_start = 0xbbc00000,
+			.size = 0x4000000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_EXECUTE,
 		},
@@ -227,7 +149,7 @@ struct {
 			
 			/*num_msix_vectors needs to be 0 for INTx operation*/
 			.num_msix_vectors = 0,
-			.shmem_region = 14,
+			.shmem_region = 3,
 			.shmem_protocol = JAILHOUSE_SHMEM_PROTO_UNDEFINED,
 			.domain = 0x0,
 		},

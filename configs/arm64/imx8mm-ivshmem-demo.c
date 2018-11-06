@@ -50,16 +50,16 @@ struct {
 				JAILHOUSE_MEM_IO | JAILHOUSE_MEM_ROOTSHARED,
 		},
 		/* RAM: Top at 4GB Space */ {
-			.phys_start = 0xbfaf0000,
+			.phys_start = 0xbbc00000,
 			.virt_start = 0,
 			.size = 0x00010000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_EXECUTE | JAILHOUSE_MEM_LOADABLE,
 		},
 		/* IVSHMEM */ {
-			.phys_start = 0x7fd00000,
-			.virt_start = 0x7fd00000,
-			.size = 0x200000,
+			.phys_start = 0xbba00000,
+			.virt_start = 0xbba00000,
+			.size = 0x100000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_ROOTSHARED,
 		},
