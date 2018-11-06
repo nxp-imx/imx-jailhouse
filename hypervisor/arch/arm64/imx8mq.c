@@ -36,9 +36,6 @@ long sip_dispatch(struct trap_context *ctx)
 			sip_allow = true;
 	}
 
-	if (!sip_allow)
-		return ARM_SMCCC_NOT_SUPPORTED;
-
 	call_smcc64(ctx->regs[0], ctx->regs[1], ctx->regs[2], ctx->regs[3],
 		    ctx->regs[4], ctx->regs[5], ctx->regs[6], ret);
 
