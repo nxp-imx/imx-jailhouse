@@ -22,4 +22,4 @@ always := lib.a
 lib-y := $(common-objs-y)
 lib-y += entry.o setup.o control.o mmio.o paging.o caches.o smccc-call.o traps.o
 lib-y += smmu.o
-lib-$(CONFIG_MACH_IMX8MQ)$(CONFIG_MACH_IMX8) += imx8mq.o
+lib-$(CONFIG_MACH_IMX8MM)$(CONFIG_MACH_IMX8MQ)$(CONFIG_MACH_IMX8) += imx8mq.o
