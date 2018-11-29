@@ -109,7 +109,7 @@ static void handle_irq(unsigned int irqn)
 
 void inmate_main(void)
 {
-	volatile unsigned int i, j;
+	volatile unsigned int i;
 	/* FIXME: Get the PCI configuration space base address from
 	// command line arguments
 	// (originally, get it from the root cell config
@@ -165,7 +165,6 @@ void inmate_main(void)
 
 	printk("IVSHMEM: Done setting up...\n");
 
-	j = 0;
 	while (1) {
 		for (i = 0; i < ndevices; i++) {
 			d = devs + i;
@@ -174,12 +173,7 @@ void inmate_main(void)
 			send_irq(d);
 		}
 
-		if (j < 10) {
-			printk("IVSHMEM: waiting for interrupt.\n");
-			asm volatile("wfi" : : : "memory");
-			j++;
-		} else {/*Delay a moment, then update value in shmem*/
-			for(i = 0; i < 10000000; i++);
-		}
+		printk("IVSHMEM: waiting for interrupt.\n");
+		asm volatile("wfi" : : : "memory");
 	}
 }
