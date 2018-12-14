@@ -206,8 +206,12 @@ void mmio_region_unregister(struct cell *cell, unsigned long start)
 enum mmio_result mmio_handle_access(struct mmio_access *mmio)
 {
 	struct cell *cell = this_cell();
-	int index = find_region(cell, mmio->address, mmio->size);
+	int index;
 	mmio_handler handler;
+
+	spin_lock(&cell->mmio_region_lock);
+	index = find_region(cell, mmio->address, mmio->size);
+	spin_unlock(&cell->mmio_region_lock);
 
 	if (index < 0)
 		return MMIO_UNHANDLED;
