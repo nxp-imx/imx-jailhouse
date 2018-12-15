@@ -513,9 +513,11 @@ static void gicv3_eoi_irq(u32 irq_id, bool deactivate)
 
 static int gicv3_inject_irq(u16 irq_id, u16 sender)
 {
+	void *gicr = this_cpu_public()->gicr.base + GICR_SGI_BASE;
 	int i;
 	int free_lr = -1;
 	u32 elsr;
+	u32 iprio;
 	u64 lr;
 
 	arm_read_sysreg(ICH_ELSR_EL2, elsr);
@@ -552,6 +554,16 @@ static int gicv3_inject_irq(u16 irq_id, u16 sender)
 	if (!is_sgi(irq_id)) {
 		lr |= ICH_LR_HW_BIT;
 		lr |= (u64)irq_id << ICH_LR_PHYS_ID_SHIFT;
+
+		if (is_spi(irq_id))
+			iprio = mmio_read32(gicd_base + GICD_IPRIORITYR +
+					    (irq_id & ~3));
+		else
+			iprio = mmio_read32(gicr + GICR_IPRIORITYR +
+					    (irq_id & ~3));
+
+		iprio = (iprio >> ((irq_id & 3) * 8)) & 0xff;
+		lr |= (u64)iprio << ICH_LR_PRIORITY_SHIFT;
 	}
 	/* GICv3 doesn't support the injection of the calling CPU ID */
 
