@@ -1,7 +1,7 @@
 /*
  * i.MX8MQ Target
  *
- * Copyright 2017 NXP
+ * Copyright 2017-2018 NXP
  *
  * Authors:
  *  Peng Fan <peng.fan@nxp.com>
@@ -18,7 +18,7 @@
 struct {
 	struct jailhouse_system header;
 	__u64 cpus[1];
-	struct jailhouse_memory mem_regions[4];
+	struct jailhouse_memory mem_regions[5];
 	struct jailhouse_irqchip irqchips[3];
 } __attribute__((packed)) config = {
 	.header = {
@@ -68,15 +68,29 @@ struct {
 		/* RAM */ {
 			.phys_start = 0x40000000,
 			.virt_start = 0x40000000,
-			.size = 0xbfb00000,
+			.size = 0x7fb00000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_EXECUTE,
 		},
-		/* IVSHMEM shared memory region for 00:00.0 */ {
-			.phys_start = 0xffb00000,
-			.virt_start = 0xffb00000,
+		/* IVHSMEM shared memory region for 00:00.0 */ {
+			.phys_start = 0xbfd00000,
+			.virt_start = 0xbfd00000,
+			.size = 0x200000,
+			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE ,
+		},
+		/* Linux Loader */{
+			.phys_start = 0xbff00000,
+			.virt_start = 0xbff00000,
 			.size = 0x100000,
-			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE,
+			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
+				JAILHOUSE_MEM_EXECUTE,
+		},
+		/* Inmate memory */{
+			.phys_start = 0xc0000000,
+			.virt_start = 0xc0000000,
+			.size = 0x3fc00000,
+			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
+				JAILHOUSE_MEM_EXECUTE,
 		},
 	},
 
