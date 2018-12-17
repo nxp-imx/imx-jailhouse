@@ -12,6 +12,7 @@
 #
 
 obj-m := jailhouse.o
+obj-m += uio_ivshmem.o
 
 ccflags-y := -I$(src)/../hypervisor/arch/$(SRCARCH)/include \
 	     -I$(src)/../hypervisor/include \

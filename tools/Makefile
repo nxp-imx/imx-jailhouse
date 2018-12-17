@@ -32,6 +32,8 @@ KBUILD_CFLAGS += $(call cc-option, -fno-pie)
 KBUILD_CFLAGS += $(call cc-option, -no-pie)
 
 BINARIES := jailhouse
+BINARIES += uio_send
+BINARIES += uio_read
 always := $(BINARIES)
 
 ifeq ($(strip $(PYTHON_PIP_USABLE)), yes)
@@ -97,6 +99,16 @@ quiet_cmd_gen_man = GEN     $@
 define cmd_gen_man
 	sed 's/$${VERSION}/$(shell cat $(src)/../VERSION)/g' $< > $@
 endef
+
+targets += uio_read.o
+
+$(obj)/uio_read: $(obj)/uio_read.o
+	$(call if_changed,ld)
+
+targets += uio_send.o
+
+$(obj)/uio_send: $(obj)/uio_send.o
+	$(call if_changed,ld)
 
 targets += jailhouse.o
 
