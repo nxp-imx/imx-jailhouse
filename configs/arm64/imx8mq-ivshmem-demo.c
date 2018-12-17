@@ -1,7 +1,7 @@
 /*
- * iMX8MQ target - gic-demo
+ * iMX8MQ target - ivshmem-demo
  *
- * Copyright NXP 2018
+ * Copyright 2018 NXP
  *
  * Authors:
  *  Peng Fan <peng.fan@nxp.com>
@@ -13,22 +13,31 @@
 #include <jailhouse/types.h>
 #include <jailhouse/cell-config.h>
 
+#define ARRAY_SIZE(a) sizeof(a) / sizeof(a[0])
+
 struct {
 	struct jailhouse_cell_desc cell;
 	__u64 cpus[1];
-	struct jailhouse_memory mem_regions[3];
+	struct jailhouse_memory mem_regions[4];
+	struct jailhouse_irqchip irqchips[1];
+	struct jailhouse_pci_device pci_devices[1];
 } __attribute__((packed)) config = {
 	.cell = {
 		.signature = JAILHOUSE_CELL_DESC_SIGNATURE,
 		.revision = JAILHOUSE_CONFIG_REVISION,
-		.name = "gic-demo",
+		.name = "ivshmem-demo",
 		.flags = JAILHOUSE_CELL_PASSIVE_COMMREG,
 
 		.cpu_set_size = sizeof(config.cpus),
 		.num_memory_regions = ARRAY_SIZE(config.mem_regions),
-		.num_irqchips = 0,
+		.num_irqchips = ARRAY_SIZE(config.irqchips),
+		.num_pci_devices = ARRAY_SIZE(config.pci_devices),
+		.vpci_irq_base = 109, /* Not include 32 base */
 		.pio_bitmap_size = 0,
-		.num_pci_devices = 0,
+
+		.pci_cfg_base = 0xbfb00000,
+		.pci_cfg_size = 0x100000,
+		.ivshmem_irq = 109 + 32,
 
 		.console = {
 			.address = 0x30860000,
@@ -50,12 +59,19 @@ struct {
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_IO | JAILHOUSE_MEM_ROOTSHARED,
 		},
-		/* RAM: Top at 4GB Space */ {
+		/* RAM: Bottom at 4GB Space */ {
 			.phys_start = 0xc0000000,
 			.virt_start = 0,
 			.size = 0x00010000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_EXECUTE | JAILHOUSE_MEM_LOADABLE,
+		},
+		/* IVSHMEM */ {
+			.phys_start = 0xbfd00000,
+			.virt_start = 0xbfd00000,
+			.size = 0x200000,
+			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
+				JAILHOUSE_MEM_ROOTSHARED,
 		},
 		/* communication region */ {
 			.virt_start = 0x80000000,
@@ -63,5 +79,32 @@ struct {
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_COMM_REGION,
 		},
-	}
+	},
+
+	.irqchips = {
+		/* GIC */ {
+			.address = 0x38800000,
+			.pin_base = 128,
+			.pin_bitmap = {
+				0x1 << (109 + 32 - 128) /* SPI 109 */
+			},
+		},
+	},
+
+	.pci_devices = {
+		{
+			.type = JAILHOUSE_PCI_TYPE_IVSHMEM,
+			.bdf = 0x0 << 3,
+			.bar_mask = {
+				0xffffff00, 0xffffffff, 0x00000000,
+				0x00000000, 0x00000000, 0x00000000,
+			},
+
+			/*num_msix_vectors needs to be 0 for INTx operation*/
+			.num_msix_vectors = 0,
+			.shmem_region = 2,
+			.shmem_protocol = JAILHOUSE_SHMEM_PROTO_UNDEFINED,
+			.domain = 0x0,
+		},
+	},
 };

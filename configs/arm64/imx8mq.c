@@ -20,6 +20,7 @@ struct {
 	__u64 cpus[1];
 	struct jailhouse_memory mem_regions[5];
 	struct jailhouse_irqchip irqchips[3];
+	struct jailhouse_pci_device pci_devices[1];
 } __attribute__((packed)) config = {
 	.header = {
 		.signature = JAILHOUSE_SYSTEM_SIGNATURE,
@@ -37,6 +38,10 @@ struct {
 				 JAILHOUSE_CON_REGDIST_4,
 		},
 		.platform_info = {
+			.pci_mmconfig_base = 0xbfb00000,
+			.pci_mmconfig_end_bus = 0,
+			.pci_is_virtual = 1,
+
 			.arm = {
 				.gic_version = 3,
 				.gicd_base = 0x38800000,
@@ -47,9 +52,11 @@ struct {
 		.root_cell = {
 			.name = "imx8mq",
 
+			.num_pci_devices = ARRAY_SIZE(config.pci_devices),
 			.cpu_set_size = sizeof(config.cpus),
 			.num_memory_regions = ARRAY_SIZE(config.mem_regions),
 			.num_irqchips = ARRAY_SIZE(config.irqchips),
+			.vpci_irq_base = 56, /* Not include 32 base */
 		},
 	},
 
@@ -115,6 +122,23 @@ struct {
 			.pin_bitmap = {
 				0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
 			},
+		},
+	},
+
+	.pci_devices = {
+		{
+			.type = JAILHOUSE_PCI_TYPE_IVSHMEM,
+			.bdf = 0x0 << 3,
+			.bar_mask = {
+				0xffffff00, 0xffffffff, 0x00000000,
+				0x00000000, 0x00000000, 0x00000000,
+			},
+
+			/*num_msix_vectors needs to be 0 for INTx operation*/
+			.num_msix_vectors = 0,
+			.shmem_region = 2,
+			.shmem_protocol = JAILHOUSE_SHMEM_PROTO_UNDEFINED,
+			.domain = 0x0,
 		},
 	},
 };
