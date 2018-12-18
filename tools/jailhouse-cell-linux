@@ -564,7 +564,7 @@ class Irqchip:
 
 
 class Config:
-    _HEADER_FORMAT = '6sH32s4xIIIIIIIIIQ8x20x32x'
+    _HEADER_FORMAT = '6sH32s4xIIIIIIIIIQ8x24x32x'
     _HEADER_REVISION = 10
 
     def __init__(self, config_file):
