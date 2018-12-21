@@ -2,9 +2,11 @@
  * Jailhouse, a Linux-based partitioning hypervisor
  *
  * Copyright (C) 2018 Texas Instruments Incorporated - http://www.ti.com/
+ * Copyright 2018 NXP
  *
  * Authors:
  *  Lokesh Vutla <lokeshvutla@ti.com>
+ *  Flynn Xu<flynn.xu@nxp.com>
  *
  * This work is licensed under the terms of the GNU GPL, version 2.  See
  * the COPYING file in the top-level directory.
@@ -21,6 +23,10 @@
 #define ARM_SMCCC_OWNER_ARCH		0
 #define ARM_SMCCC_OWNER_SIP             2
 #define ARM_SMCCC_OWNER_STANDARD        4
+#define ARM_SMCCC_OWNER_TRUSTED_APP		48
+#define ARM_SMCCC_OWNER_TRUSTED_APP_END 49
+#define ARM_SMCCC_OWNER_TRUSTED_OS		50
+#define ARM_SMCCC_OWNER_TRUSTED_OS_END  63
 
 #define ARM_SMCCC_CONV_32		0
 #define ARM_SMCCC_CONV_64		1
