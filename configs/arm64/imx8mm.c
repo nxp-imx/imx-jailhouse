@@ -20,7 +20,7 @@
 struct {
 	struct jailhouse_system header;
 	__u64 cpus[1];
-	struct jailhouse_memory mem_regions[6];
+	struct jailhouse_memory mem_regions[9];
 	struct jailhouse_irqchip irqchips[3];
 	struct jailhouse_pci_device pci_devices[1];
 } __attribute__((packed)) config = {
@@ -28,7 +28,7 @@ struct {
 		.signature = JAILHOUSE_SYSTEM_SIGNATURE,
 		.revision = JAILHOUSE_CONFIG_REVISION,
 		.hypervisor_memory = {
-			.phys_start = 0xbfc00000,
+			.phys_start = 0xb7c00000,
 			.size =       0x00400000,
 		},
 		.debug_console = {
@@ -79,10 +79,24 @@ struct {
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_IO,
 		},
-		/* RAM */ {
+		/* RAM 00*/ {
 			.phys_start = 0x40000000,
 			.virt_start = 0x40000000,
-			.size = 0x7b700000,
+			.size = 0x73c00000,
+			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
+				JAILHOUSE_MEM_EXECUTE,
+		},
+		/* Inmate memory */{
+			.phys_start = 0xb3c00000,
+			.virt_start = 0xb3c00000,
+			.size = 0x04000000,
+			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
+				JAILHOUSE_MEM_EXECUTE,
+		},
+		/* RAM 01 */ {
+			.phys_start = 0xb8000000,
+			.virt_start = 0xb8000000,
+			.size = 0x03700000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_EXECUTE,
 		},
@@ -105,12 +119,18 @@ struct {
 			.size = 0x100000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE ,
 		},
-		/* Inmate memory */{
+		/* RAM 02 */ {
 			.phys_start = 0xbbc00000,
 			.virt_start = 0xbbc00000,
-			.size = 0x4000000,
+			.size = 0x02400000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_EXECUTE,
+		},
+		/* OP-TEE reserved memory */{
+			.phys_start = 0xbe000000,
+			.virt_start = 0xbe000000,
+			.size = 0x2000000,
+			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE,
 		},
 	},
 
@@ -149,7 +169,7 @@ struct {
 			
 			/*num_msix_vectors needs to be 0 for INTx operation*/
 			.num_msix_vectors = 0,
-			.shmem_region = 3,
+			.shmem_region = 5,
 			.shmem_protocol = JAILHOUSE_SHMEM_PROTO_UNDEFINED,
 			.domain = 0x0,
 		},
