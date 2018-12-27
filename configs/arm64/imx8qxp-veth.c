@@ -18,7 +18,7 @@
 struct {
 	struct jailhouse_system header;
 	__u64 cpus[1];
-	struct jailhouse_memory mem_regions[6];
+	struct jailhouse_memory mem_regions[7];
 	struct jailhouse_irqchip irqchips[3];
 	struct jailhouse_pci_device pci_devices[1];
 } __attribute__((packed)) config = {
@@ -26,7 +26,7 @@ struct {
 		.signature = JAILHOUSE_SYSTEM_SIGNATURE,
 		.revision = JAILHOUSE_CONFIG_REVISION,
 		.hypervisor_memory = {
-			.phys_start = 0xffc00000,
+			.phys_start = 0xfdc00000,
 			.size =       0x00400000,
 		},
 		.debug_console = {
@@ -43,7 +43,7 @@ struct {
 			 * update the value in mach.h
 			 * (PCI_CFG_BASE) and regenerate the inmate library
 			 */
-			.pci_mmconfig_base = 0xff700000,
+			.pci_mmconfig_base = 0xfd700000,
 			.pci_mmconfig_end_bus = 0x0,
 			.pci_is_virtual = 1,
 
@@ -93,18 +93,18 @@ struct {
 		/* Inmate memory */ {
 			.phys_start = 0xdf700000,
 			.virt_start = 0xdf700000,
-			.size = 0x20000000,
+			.size = 0x1e000000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE,
 		},
 		/* IVHSMEM shared memory region for 00:00.0 */ {
-			.phys_start = 0xff900000,
-			.virt_start = 0xff900000,
+			.phys_start = 0xfd900000,
+			.virt_start = 0xfd900000,
 			.size = 0x200000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE ,
 		},
 		/* Loader */{
-			.phys_start = 0xffb00000,
-			.virt_start = 0xffb00000,
+			.phys_start = 0xfdb00000,
+			.virt_start = 0xfdb00000,
 			.size = 0x100000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_EXECUTE,

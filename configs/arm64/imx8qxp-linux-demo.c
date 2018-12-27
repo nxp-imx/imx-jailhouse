@@ -86,20 +86,20 @@ struct {
 		/* RAM: Top at 4GB Space */ {
 			.phys_start = 0xdf700000,
 			.virt_start = 0xdf700000,
-			.size = 0x20000000,
+			.size = 0x1e000000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_EXECUTE | JAILHOUSE_MEM_DMA |
 				JAILHOUSE_MEM_LOADABLE,
 		},
 		/* IVHSMEM shared memory region for 00:00.0 */ {
-			.phys_start = 0xff900000,
-			.virt_start = 0xff900000,
+			.phys_start = 0xfd900000,
+			.virt_start = 0xfd900000,
 			.size = 0x200000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_ROOTSHARED,
 		},
 		/* RAM: Top at 4GB Space */ {
-			.phys_start = 0xffb00000,
+			.phys_start = 0xdf700000,
 			.virt_start = 0,
 			.size = 0x10000, /* 64KB */
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |

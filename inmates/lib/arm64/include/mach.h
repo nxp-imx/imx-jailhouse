@@ -164,7 +164,7 @@
  * The following 1M is for PCI BAR, take care the bar not to conflict with
  * other memory regions.
  */
-#define PCI_CFG_BASE	0xff700000
+#define PCI_CFG_BASE	0xfd700000
 #define PCI_CFG_SIZE	0x100000
 
 /* Interrupt 122 is not used by others */
