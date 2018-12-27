@@ -59,15 +59,15 @@ struct {
 				JAILHOUSE_MEM_IO | JAILHOUSE_MEM_ROOTSHARED,
 		},
 		/* RAM: from Inmate memory of imx8qxp.c */ {
-			.phys_start = 0xff600000,
+			.phys_start = 0xdf700000,
 			.virt_start = 0,
 			.size = 0x00010000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_EXECUTE | JAILHOUSE_MEM_LOADABLE,
 		},
 		/* IVSHMEM */ {
-			.phys_start = 0xff900000,
-			.virt_start = 0xff900000,
+			.phys_start = 0xfd900000,
+			.virt_start = 0xfd900000,
 			.size = 0x200000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_ROOTSHARED,
