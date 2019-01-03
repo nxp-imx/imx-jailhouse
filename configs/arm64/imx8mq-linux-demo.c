@@ -18,7 +18,7 @@
 struct {
 	struct jailhouse_cell_desc cell;
 	__u64 cpus[1];
-	struct jailhouse_memory mem_regions[8];
+	struct jailhouse_memory mem_regions[7];
 	struct jailhouse_irqchip irqchips[2];
 	struct jailhouse_pci_device pci_devices[1];
 } __attribute__((packed)) config = {
@@ -41,13 +41,6 @@ struct {
 	},
 
 	.mem_regions = {
-		/* iomux */ {
-			.phys_start = 0x30330000,
-			.virt_start = 0x30330000,
-			.size = 0x20000,
-			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
-				JAILHOUSE_MEM_IO | JAILHOUSE_MEM_ROOTSHARED,
-		},
 		/* UART1 earlycon */ {
 			.phys_start = 0x30860000,
 			.virt_start = 0x30860000,
@@ -60,7 +53,7 @@ struct {
 			.virt_start = 0x30890000,
 			.size = 0x1000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
-				JAILHOUSE_MEM_IO | JAILHOUSE_MEM_ROOTSHARED,
+				JAILHOUSE_MEM_IO,
 		},
 		/* SHDC1 */ {
 			.phys_start = 0x30b40000,
@@ -77,7 +70,7 @@ struct {
 				JAILHOUSE_MEM_ROOTSHARED,
 		},
 		/* RAM: Top at 4GB Space */ {
-			.phys_start = 0xbfff0000,
+			.phys_start = 0xbff00000,
 			.virt_start = 0,
 			.size = 0x10000, /* 64KB */
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
@@ -86,7 +79,7 @@ struct {
 		/* RAM: Top at 4GB Space */ {
 			.phys_start = 0xc0000000,
 			.virt_start = 0xc0000000,
-			.size = 0x3fc00000,
+			.size = 0x3dc00000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_EXECUTE | JAILHOUSE_MEM_DMA |
 				JAILHOUSE_MEM_LOADABLE,
@@ -127,7 +120,7 @@ struct {
 
 			/*num_msix_vectors needs to be 0 for INTx operation*/
 			.num_msix_vectors = 0,
-			.shmem_region = 4,
+			.shmem_region = 3,
 			.shmem_protocol = JAILHOUSE_SHMEM_PROTO_VETH,
 			.domain = 0x0,
 		},
