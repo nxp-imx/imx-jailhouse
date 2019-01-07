@@ -38,6 +38,7 @@ struct {
 			.type = JAILHOUSE_CON_TYPE_IMX,
 			.flags = JAILHOUSE_CON_ACCESS_MMIO |
 				 JAILHOUSE_CON_REGDIST_4,
+			.type = JAILHOUSE_CON_TYPE_IMX,
 		},
 		.platform_info = {
 			.pci_mmconfig_base = 0xbfb00000,
