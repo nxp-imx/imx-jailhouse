@@ -172,6 +172,28 @@
 #define arm_read_sysreg(sysreg, val) \
 	asm volatile ("mrs	%0,  "__stringify(sysreg)"\n" : "=r"((val)))
 
+/* ARM32 */
+#define PSR_USR_MODE	0x0
+#define PSR_FIQ_MODE	0x1
+#define PSR_IRQ_MODE	0x2
+#define PSR_SVC_MODE	0x3
+#define PSR_MON_MODE	0x6
+#define PSR_ABT_MODE	0x7
+#define PSR_HYP_MODE	0xa
+#define PSR_UND_MODE	0xb
+#define PSR_SYS_MODE	0xf
+
+#define PSR_32_BIT	(1 << 4)
+#define PSR_T_BIT	(1 << 5)
+
+#define PSR_E_BIT	(1 << 9)
+#define PSR_J_BIT	(1 << 24)
+#define PSR_IT_MASK(it)	(((it) & 0x3) << 25 | ((it) & 0xfc) << 8)
+#define PSR_IT(psr)	(((psr) >> 25 & 0x3) | ((psr) >> 8 & 0xfc))
+
+#define RESET_PSR_32	(PSR_I_BIT | PSR_F_BIT | PSR_A_BIT | PSR_SVC_MODE \
+			| PSR_32_BIT)
+
 #endif /* __ASSEMBLY__ */
 
 #endif
