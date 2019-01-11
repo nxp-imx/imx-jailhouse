@@ -328,8 +328,12 @@ static bool create_vpci_of_overlay(struct jailhouse_system *config)
 	of_fdt_unflatten_tree((const void *)__dtb_vpci_template_begin, NULL,
 			      &overlay);
 #else /* < 4.7 */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,2,0)
 	of_fdt_unflatten_tree((const void *)__dtb_vpci_template_begin, &overlay);
-#endif /* < 4.7 */
+#else /* < 4.2 */
+	of_fdt_unflatten_tree((void *)__dtb_vpci_template_begin, &overlay);
+#endif
+#endif
 	if (!overlay)
 		goto out_compat;
 
