@@ -117,6 +117,11 @@ static inline u64 mmio_read64(void *address)
 	return *(volatile u64 *)address;
 }
 
+static inline void mmio_write64(void *address, u64 value)
+{
+	*(volatile u64 *)address = value;
+}
+
 static inline void __attribute__((noreturn)) halt(void)
 {
 	while (1)
