@@ -1,7 +1,7 @@
 /*
  * ivshmem test program
  *
- * Copyright (c) NXP 2018
+ * Copyright 2018-2019 NXP
  *
  * Authors:
  *  flynn <flynn.xu@nxp.com>

@@ -1,7 +1,7 @@
 /*
  * iMX8QXP target - gic-demo
  *
- * Copyright NXP 2018
+ * Copyright 2018-2019 NXP
  *
  * Authors:
  *  Peng Fan <peng.fan@nxp.com>
