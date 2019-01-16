@@ -35,7 +35,7 @@ struct {
 		.vpci_irq_base = 90, /* Not include 32 base */
 		.pio_bitmap_size = 0,
 
-		.pci_cfg_base = 0xff700000,
+		.pci_cfg_base = 0xfd700000,
 		.pci_cfg_size = 0x100000,
 		.ivshmem_irq = 90 + 32,
 
