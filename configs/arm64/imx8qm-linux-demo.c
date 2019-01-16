@@ -105,7 +105,7 @@ struct {
 				JAILHOUSE_MEM_ROOTSHARED,
 		},
 		/* RAM: Bottom at 4GB Space */ {
-			.phys_start = 0xdf700000,
+			.phys_start = 0xfdb00000,
 			.virt_start = 0,
 			.size = 0x10000, /* 64KB */
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
