@@ -27,6 +27,7 @@ struct {
 	.header = {
 		.signature = JAILHOUSE_SYSTEM_SIGNATURE,
 		.revision = JAILHOUSE_CONFIG_REVISION,
+		.flags = JAILHOUSE_SYS_VIRTUAL_DEBUG_CONSOLE,
 		.hypervisor_memory = {
 			.phys_start = 0xffc00000,
 			.size =       0x00400000,
@@ -34,10 +35,10 @@ struct {
 		.debug_console = {
 			.address = 0x30860000,
 			.size = 0x1000,
-			.flags = JAILHOUSE_CON1_TYPE_IMX |
-				 JAILHOUSE_CON1_ACCESS_MMIO |
-				 JAILHOUSE_CON1_REGDIST_4 |
-				 JAILHOUSE_CON2_TYPE_ROOTPAGE,
+			.flags = JAILHOUSE_CON_TYPE_IMX |
+				 JAILHOUSE_CON_ACCESS_MMIO |
+				 JAILHOUSE_CON_REGDIST_4,
+			.type = JAILHOUSE_CON_TYPE_IMX,
 		},
 		.platform_info = {
 			/*
