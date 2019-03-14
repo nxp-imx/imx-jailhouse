@@ -44,6 +44,9 @@
 #include <asm/msr.h>
 #endif
 
+#include <linux/busfreq-imx.h>
+#include <linux/pm_qos.h>
+
 #include "cell.h"
 #include "jailhouse.h"
 #include "main.h"
@@ -108,6 +111,8 @@ static typeof(__boot_cpu_mode) *__boot_cpu_mode_sym;
 #if defined(CONFIG_ARM) || defined(CONFIG_ARM64)
 static typeof(__hyp_stub_vectors) *__hyp_stub_vectors_sym;
 #endif
+
+static struct pm_qos_request pm_qos_req;
 
 /* last_console contains three members:
  *   - valid: indicates if content in the page member is present
@@ -412,6 +417,8 @@ static int jailhouse_cmd_enable(struct jailhouse_system __user *arg)
 	}
 #endif
 
+	request_bus_freq(BUS_FREQ_HIGH);
+
 	/* Load hypervisor image */
 	err = request_firmware(&hypervisor, fw_name, jailhouse_dev);
 	if (err) {
@@ -615,6 +622,8 @@ error_put_module:
 	module_put(THIS_MODULE);
 
 error_unlock:
+	release_bus_freq(BUS_FREQ_HIGH);
+
 	mutex_unlock(&jailhouse_lock);
 	return err;
 }
@@ -688,6 +697,7 @@ static int jailhouse_cmd_disable(void)
 #endif
 
 	atomic_set(&call_done, 0);
+
 	on_each_cpu(leave_hypervisor, NULL, 0);
 	while (atomic_read(&call_done) != num_online_cpus())
 		cpu_relax();
@@ -704,6 +714,8 @@ static int jailhouse_cmd_disable(void)
 	jailhouse_enabled = false;
 	module_put(THIS_MODULE);
 
+	release_bus_freq(BUS_FREQ_HIGH);
+
 	pr_info("The Jailhouse was closed.\n");
 
 unlock_out:
@@ -716,6 +728,8 @@ static long jailhouse_ioctl(struct file *file, unsigned int ioctl,
 			    unsigned long arg)
 {
 	long err;
+
+	pm_qos_add_request(&pm_qos_req, PM_QOS_CPU_DMA_LATENCY, 0);
 
 	switch (ioctl) {
 	case JAILHOUSE_ENABLE:
@@ -743,6 +757,8 @@ static long jailhouse_ioctl(struct file *file, unsigned int ioctl,
 		err = -EINVAL;
 		break;
 	}
+
+	pm_qos_remove_request(&pm_qos_req);
 
 	return err;
 }
