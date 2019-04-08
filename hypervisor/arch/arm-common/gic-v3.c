@@ -193,11 +193,15 @@ static int gicv3_cpu_init(struct per_cpu *cpu_data)
 	unsigned long redist_addr = system_config->platform_info.arm.gicr_base;
 	unsigned long redist_size = GIC_V3_REDIST_SIZE;
 	void *redist_base = gicr_base;
+	unsigned long gicr_ispendr;
+	void *gicr;
 	u64 typer, mpidr;
 	u32 pidr, aff;
 	u32 cell_icc_ctlr, cell_icc_pmr, cell_icc_igrpen1;
 	u32 ich_vtr;
 	u32 ich_vmcr;
+	int i;
+
 
 	if (gic_version == 4)
 		redist_size = GIC_V4_REDIST_SIZE;
@@ -277,6 +281,22 @@ static int gicv3_cpu_init(struct per_cpu *cpu_data)
 
 	/* After this, the cells access the virtual interface of the GIC. */
 	arm_write_sysreg(ICH_HCR_EL2, ICH_HCR_EN);
+
+	/*
+	 * When enabling jailhouse, there might be pending SGIs. To
+	 * avoid losing the SGIs, need to migrate the pending SGIs
+	 * into the pending queue, hardware or, if full, software.
+	 */
+	gicr = this_cpu_public()->gicr.base + GICR_SGI_BASE;
+	gicr_ispendr = mmio_read32(gicr + GICR_ISPENDR) & 0xffff;
+
+	for (i = 0; i < 16; i++) {
+		if (!test_bit(i, &gicr_ispendr))
+			continue;
+
+		mmio_write32(gicr + GICR_ICPENDR, 1UL << i);
+		irqchip_set_pending(this_cpu_public(), i);
+	}
 
 	return 0;
 }
