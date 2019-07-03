@@ -19,7 +19,7 @@ struct {
 	struct jailhouse_cell_desc cell;
 	__u64 cpus[1];
 	struct jailhouse_memory mem_regions[10];
-	struct jailhouse_irqchip irqchips[3];
+	struct jailhouse_irqchip irqchips[4];
 	struct jailhouse_pci_device pci_devices[1];
 	struct jailhouse_smmu_sid smmu_sids[1];
 } __attribute__((packed)) config = {
@@ -125,6 +125,13 @@ struct {
 			.pin_base = 96,
 			.pin_bitmap = {
 				0x1 << (90 + 32 - 96)
+			},
+		},
+		/* MU2_A */ {
+			.address = 0x51a00000,
+			.pin_base = 192,
+			.pin_bitmap = {
+				(1 << (178 + 32 - 192))
 			},
 		},
 		/* sdhc1 */ {
