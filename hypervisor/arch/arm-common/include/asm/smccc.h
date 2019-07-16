@@ -2,6 +2,7 @@
  * Jailhouse, a Linux-based partitioning hypervisor
  *
  * Copyright (C) 2018 Texas Instruments Incorporated - http://www.ti.com/
+ * Copyright 2019 NXP
  *
  * Authors:
  *  Lokesh Vutla <lokeshvutla@ti.com>
@@ -9,6 +10,10 @@
  * This work is licensed under the terms of the GNU GPL, version 2.  See
  * the COPYING file in the top-level directory.
  */
+
+#ifndef _SMCCC_
+#define _SMCCC_
+#include <asm/traps.h>
 
 #define SMCCC_VERSION			0x80000000
 #define SMCCC_ARCH_FEATURES		0x80000001
@@ -41,5 +46,7 @@ struct trap_context;
 
 void smccc_discover(void);
 enum trap_return handle_smc(struct trap_context *ctx);
+long sip_dispatch(struct trap_context *ctx);
 
 #endif /* !__ASSEMBLY__ */
+#endif
