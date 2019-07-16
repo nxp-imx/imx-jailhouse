@@ -13,7 +13,6 @@
 
 #ifndef _SMCCC_
 #define _SMCCC_
-#include <asm/traps.h>
 
 #define SMCCC_VERSION			0x80000000
 #define SMCCC_ARCH_FEATURES		0x80000001
@@ -45,6 +44,7 @@
 #define SMCCC_IS_CONV_64(function_id)	!!(function_id & (1 << 30))
 
 #ifndef __ASSEMBLY__
+#include <asm/traps.h>
 
 struct trap_context;
 

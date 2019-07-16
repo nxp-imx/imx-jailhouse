@@ -10,6 +10,9 @@
  * the COPYING file in the top-level directory.
  */
 
+#include <asm/processor.h>
+#include <jailhouse/types.h>
+
 struct trap_context {
 	unsigned long *regs;
 	u64 esr;
