@@ -18,30 +18,6 @@
 #include <asm/smc.h>
 #include <asm/smccc.h>
 
-static void trust_dispatch(struct trap_context *ctx)
-{
-	register unsigned long x0 asm("x0") = ctx->regs[0];
-	register unsigned long x1 asm("x1") = ctx->regs[1];
-	register unsigned long x2 asm("x2") = ctx->regs[2];
-	register unsigned long x3 asm("x3") = ctx->regs[3];
-	register unsigned long x4 asm("x4") = ctx->regs[4];
-	register unsigned long x5 asm("x5") = ctx->regs[5];
-	register unsigned long x6 asm("x6") = ctx->regs[6];
-	register unsigned long x7 asm("x7") = ctx->regs[7];
-
-	asm volatile ("smc #0\n"
-		      : "+r" (x0), "+r" (x1), "+r" (x2), "+r" (x3),
-		      "+r" (x4), "+r" (x5), "+r" (x6), "+r" (x7)
-		      :
-		      : "x8", "x9", "x10", "x11", "x12",
-		      "x13", "x14", "x15", "x16", "x17" );
-
-	ctx->regs[0] = x0;
-	ctx->regs[1] = x1;
-	ctx->regs[2] = x2;
-	ctx->regs[3] = x3;
-}
-
 void smccc_discover(void)
 {
 	int ret;
@@ -108,6 +84,10 @@ static enum trap_return handle_arch(struct trap_context *ctx)
 	}
 
 	return TRAP_HANDLED;
+}
+
+void __attribute__((weak)) trust_dispatch(struct trap_context *ctx)
+{
 }
 
 long __attribute__((weak)) sip_dispatch(struct trap_context *ctx)
