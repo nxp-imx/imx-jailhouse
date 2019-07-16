@@ -2,6 +2,7 @@
  * Jailhouse, a Linux-based partitioning hypervisor
  *
  * Copyright (C) 2018 Texas Instruments Incorporated - http://www.ti.com/
+ * Copyright 2019 NXP
  *
  * Authors:
  *  Lokesh Vutla <lokeshvutla@ti.com>
@@ -85,6 +86,11 @@ static enum trap_return handle_arch(struct trap_context *ctx)
 	return TRAP_HANDLED;
 }
 
+long __attribute__((weak)) sip_dispatch(struct trap_context *ctx)
+{
+	return ARM_SMCCC_NOT_SUPPORTED;
+}
+
 enum trap_return handle_smc(struct trap_context *ctx)
 {
 	unsigned long *regs = ctx->regs;
@@ -99,7 +105,7 @@ enum trap_return handle_smc(struct trap_context *ctx)
 
 	case ARM_SMCCC_OWNER_SIP:
 		stats[JAILHOUSE_CPU_STAT_VMEXITS_SMCCC]++;
-		regs[0] = ARM_SMCCC_NOT_SUPPORTED;
+		regs[0] = sip_dispatch(ctx);
 		break;
 
 	case ARM_SMCCC_OWNER_STANDARD:
