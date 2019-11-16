@@ -82,7 +82,11 @@ MODULE_FIRMWARE(JAILHOUSE_FW_NAME);
 #endif
 MODULE_VERSION(JAILHOUSE_VERSION);
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,4,0)
+extern char __hyp_stub_vectors[];
+#else
 extern unsigned int __hyp_stub_vectors[];
+#endif
 
 struct console_state {
 	unsigned int head;
