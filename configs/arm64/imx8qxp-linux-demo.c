@@ -17,7 +17,7 @@ struct {
 	struct jailhouse_cell_desc cell;
 	__u64 cpus[1];
 	struct jailhouse_memory mem_regions[10];
-	struct jailhouse_irqchip irqchips[3];
+	struct jailhouse_irqchip irqchips[4];
 	struct jailhouse_pci_device pci_devices[1];
 } __attribute__((packed)) config = {
 	.cell = {
@@ -126,11 +126,18 @@ struct {
 				(1 << (178 + 32 - 192))
 			},
 		},
-		/* uart2/sdhc1 */ {
+		/* sdhc1 */ {
 			.address = 0x51a00000,
 			.pin_base = 256,
 			.pin_bitmap = {
-				(1 << (227 + 32 - 256))	| (1 << (232 + 32 - 256))
+				(1 << (232 + 32 - 256))
+			},
+		},
+		/* uart2 */ {
+			.address = 0x51a00000,
+			.pin_base = 352,
+			.pin_bitmap = {
+				(1 << (347 + 32 - 352))
 			},
 		},
 	},
