@@ -266,6 +266,10 @@ struct jailhouse_iommu {
 			__u32 tlb_size;
 		} __attribute__((packed)) tipvu;
 	};
+
+	__u32 arm_sid_mask;
+	__u32 arm_smmu_arch;
+	__u32 arm_smmu_impl;
 } __attribute__((packed));
 
 struct jailhouse_pio {
@@ -289,6 +293,17 @@ struct jailhouse_pio {
 
 #define SYS_FLAGS_VIRTUAL_DEBUG_CONSOLE(flags) \
 	!!((flags) & JAILHOUSE_SYS_VIRTUAL_DEBUG_CONSOLE)
+
+enum arm_smmu_arch_version {
+	ARM_SMMU_V1,
+	ARM_SMMU_V1_64K,
+	ARM_SMMU_V2,
+};
+
+enum arm_smmu_implementation {
+	GENERIC_SMMU,
+	ARM_MMU500,
+};
 
 /**
  * General descriptor of the system.

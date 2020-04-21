@@ -1,7 +1,7 @@
 /*
  * iMX8QM target - linux-demo
  *
- * Copyright 2018 NXP
+ * Copyright 2020 NXP
  *
  * Authors:
  *  Peng Fan <peng.fan@nxp.com>
@@ -19,6 +19,7 @@ struct {
 	struct jailhouse_memory mem_regions[18];
 	struct jailhouse_irqchip irqchips[4];
 	struct jailhouse_pci_device pci_devices[2];
+	__u32 stream_ids[1];
 } __attribute__((packed)) config = {
 	.cell = {
 		.signature = JAILHOUSE_CELL_DESC_SIGNATURE,
@@ -28,6 +29,7 @@ struct {
 
 		.cpu_set_size = sizeof(config.cpus),
 		.num_memory_regions = ARRAY_SIZE(config.mem_regions),
+		.num_stream_ids = ARRAY_SIZE(config.stream_ids),
 		.num_irqchips = ARRAY_SIZE(config.irqchips),
 		.num_pci_devices = ARRAY_SIZE(config.pci_devices),
 		.vpci_irq_base = 124, /* Not include 32 base */
@@ -189,5 +191,9 @@ struct {
 			.shmem_peers = 2,
 			.shmem_protocol = JAILHOUSE_SHMEM_PROTO_VETH,
 		},
+	},
+
+	.stream_ids = {
+		0x10,
 	},
 };

@@ -1,7 +1,7 @@
 /*
  * iMX8QM target - ivshmem-demo
  *
- * Copyright 2019 NXP
+ * Copyright 2020 NXP
  *
  * Authors:
  *  Peng Fan <peng.fan@nxp.com>

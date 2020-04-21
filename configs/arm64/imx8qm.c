@@ -1,7 +1,7 @@
 /*
  * i.MX8QM Target
  *
- * Copyright 2018 NXP
+ * Copyright 2020 NXP
  *
  * Authors:
  *  Peng Fan <peng.fan@nxp.com>
@@ -19,6 +19,7 @@ struct {
 	struct jailhouse_memory mem_regions[15];
 	struct jailhouse_irqchip irqchips[3];
 	struct jailhouse_pci_device pci_devices[2];
+	__u32 stream_ids[3];
 } __attribute__((packed)) config = {
 	.header = {
 		.signature = JAILHOUSE_SYSTEM_SIGNATURE,
@@ -52,6 +53,15 @@ struct {
 				.gicd_base = 0x51a00000,
 				.gicr_base = 0x51b00000,
 				.maintenance_irq = 25,
+				.iommu_units = {
+					{
+						.base = 0x51400000,
+						.size = 0x40000,
+						.arm_sid_mask = 0x7f80,
+						.arm_smmu_arch = ARM_SMMU_V2,
+						.arm_smmu_impl = ARM_MMU500,
+					},
+				},
 			},
 		},
 
@@ -61,6 +71,7 @@ struct {
 			.num_pci_devices = ARRAY_SIZE(config.pci_devices),
 			.cpu_set_size = sizeof(config.cpus),
 			.num_memory_regions = ARRAY_SIZE(config.mem_regions),
+			.num_stream_ids = ARRAY_SIZE(config.stream_ids),
 			.num_irqchips = ARRAY_SIZE(config.irqchips),
 			/*
 			 * vpci_irq_base not include base 32
@@ -194,5 +205,9 @@ struct {
 			.shmem_peers = 2,
 			.shmem_protocol = JAILHOUSE_SHMEM_PROTO_VETH,
 		},
+	},
+
+	.stream_ids = {
+		0x11, 0x12, 0x13,
 	},
 };
