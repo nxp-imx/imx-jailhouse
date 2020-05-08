@@ -11,6 +11,9 @@
  * the COPYING file in the top-level directory.
  */
 
+#ifndef __ARM64_ASM_BITOPS__
+#define __ARM64_ASM_BITOPS__
+
 /* also include from arm-common */
 #include_next <asm/bitops.h>
 
@@ -43,3 +46,4 @@ static inline int atomic_test_and_set_bit(int nr, volatile unsigned long *addr)
 	} while (ret);
 	return !!(test);
 }
+#endif

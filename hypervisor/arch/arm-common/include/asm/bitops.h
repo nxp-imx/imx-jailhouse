@@ -12,6 +12,9 @@
  * the COPYING file in the top-level directory.
  */
 
+#ifndef __ARM_ASM_BITOPS__
+#define __ARM_ASM_BITOPS__
+
 static inline __attribute__((always_inline)) int
 test_bit(unsigned int nr, const volatile unsigned long *addr)
 {
@@ -41,3 +44,4 @@ static inline unsigned long ffzl(unsigned long word)
 {
 	return ffsl(~word);
 }
+#endif
