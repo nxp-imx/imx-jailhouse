@@ -30,7 +30,7 @@ struct {
 		.num_memory_regions = ARRAY_SIZE(config.mem_regions),
 		.num_irqchips = ARRAY_SIZE(config.irqchips),
 		.num_pci_devices = ARRAY_SIZE(config.pci_devices),
-		.vpci_irq_base = 108, /* Not include 32 base */
+		.vpci_irq_base = 51, /* Not include 32 base */
 	},
 
 	.cpus = {
@@ -91,7 +91,7 @@ struct {
 			.virt_start = 0x30b40000,
 			.size = 0x10000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
-				JAILHOUSE_MEM_IO | JAILHOUSE_MEM_ROOTSHARED,
+				JAILHOUSE_MEM_IO,
 		},
 		/* RAM: Top at 4GB Space */ {
 			.phys_start = 0xbff00000,
@@ -126,9 +126,9 @@ struct {
 		},
 		/* IVSHMEM */ {
 			.address = 0x38800000,
-			.pin_base = 128,
+			.pin_base = 64,
 			.pin_bitmap = {
-				0x1 << (108 + 32 - 128) /* SPI 109 */
+				0xf << (51 + 32 - 64) /* SPI 51 */
 			},
 		},
 	},
@@ -136,7 +136,7 @@ struct {
 	.pci_devices = {
 		{ /* IVSHMEM 00:00.0 (demo) */
 			.type = JAILHOUSE_PCI_TYPE_IVSHMEM,
-			.domain = 1,
+			.domain = 0,
 			.bdf = 0 << 3,
 			.bar_mask = JAILHOUSE_IVSHMEM_BAR_MASK_INTX,
 			.shmem_regions_start = 0,
