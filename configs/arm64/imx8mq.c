@@ -42,6 +42,7 @@ struct {
 			.pci_mmconfig_base = 0xbfb00000,
 			.pci_mmconfig_end_bus = 0,
 			.pci_is_virtual = 1,
+			.pci_domain = 0,
 
 			.arm = {
 				.gic_version = 3,
@@ -57,7 +58,7 @@ struct {
 			.cpu_set_size = sizeof(config.cpus),
 			.num_memory_regions = ARRAY_SIZE(config.mem_regions),
 			.num_irqchips = ARRAY_SIZE(config.irqchips),
-			.vpci_irq_base = 51, /* Not include 32 base */
+			.vpci_irq_base = 81, /* Not include 32 base */
 		},
 	},
 
