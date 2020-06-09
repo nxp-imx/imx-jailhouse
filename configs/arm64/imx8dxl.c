@@ -41,7 +41,6 @@ struct {
 			.pci_mmconfig_end_bus = 0x0,
 			.pci_is_virtual = 1,
 			.pci_domain = 0,
-
 			.arm = {
 				.gic_version = 3,
 				.gicd_base = 0x51a00000,
@@ -49,19 +48,13 @@ struct {
 				.maintenance_irq = 25,
 			},
 		},
-
 		.root_cell = {
 			.name = "imx8dxl",
-
 			.num_pci_devices = ARRAY_SIZE(config.pci_devices),
 			.cpu_set_size = sizeof(config.cpus),
 			.num_memory_regions = ARRAY_SIZE(config.mem_regions),
 			.num_irqchips = ARRAY_SIZE(config.irqchips),
-			/*
-			 * 118/119 is not used by others, vpci_irq_base not
-			 * include base 32
-			 */
-			.vpci_irq_base = 86,
+			.vpci_irq_base = 2, /* Not include 32 base */
 		},
 	},
 
@@ -109,7 +102,6 @@ struct {
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_IO,
 		},
-
 		/* RAM */ {
 			.phys_start = 0x80200000,
 			.virt_start = 0x80200000,

@@ -23,12 +23,10 @@ struct {
 		.revision = JAILHOUSE_CONFIG_REVISION,
 		.name = "gic-demo",
 		.flags = JAILHOUSE_CELL_PASSIVE_COMMREG,
-
 		.cpu_set_size = sizeof(config.cpus),
 		.num_memory_regions = ARRAY_SIZE(config.mem_regions),
 		.num_irqchips = 0,
 		.num_pci_devices = 0,
-
 		.console = {
 			.address = 0x5a060000,
 			.type = JAILHOUSE_CON_TYPE_IMX_LPUART,

@@ -25,13 +25,11 @@ struct {
 		.revision = JAILHOUSE_CONFIG_REVISION,
 		.name = "ivshmem-demo",
 		.flags = JAILHOUSE_CELL_PASSIVE_COMMREG,
-
 		.cpu_set_size = sizeof(config.cpus),
 		.num_memory_regions = ARRAY_SIZE(config.mem_regions),
 		.num_irqchips = ARRAY_SIZE(config.irqchips),
 		.num_pci_devices = ARRAY_SIZE(config.pci_devices),
-		.vpci_irq_base = 90, /* Not include 32 base */
-
+		.vpci_irq_base = 130, /* Not include 32 base */
 		.console = {
 			.address = 0x5a060000,
 			.type = JAILHOUSE_CON_TYPE_IMX_LPUART,
@@ -103,9 +101,9 @@ struct {
 	.irqchips = {
 		/* GIC */ {
 			.address = 0x51a00000,
-			.pin_base = 96,
+			.pin_base = 160,
 			.pin_bitmap = {
-				0x1 << (90 + 32 - 96) /* irq 122 */
+				0x1 << (130 + 32 - 160) /* irq 162 */
 			},
 		},
 	},

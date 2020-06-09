@@ -16,7 +16,7 @@
 struct {
 	struct jailhouse_cell_desc cell;
 	__u64 cpus[1];
-	struct jailhouse_memory mem_regions[18];
+	struct jailhouse_memory mem_regions[19];
 	struct jailhouse_irqchip irqchips[4];
 	struct jailhouse_pci_device pci_devices[2];
 } __attribute__((packed)) config = {
@@ -25,12 +25,11 @@ struct {
 		.revision = JAILHOUSE_CONFIG_REVISION,
 		.name = "linux-inmate-demo",
 		.flags = JAILHOUSE_CELL_PASSIVE_COMMREG,
-
 		.cpu_set_size = sizeof(config.cpus),
 		.num_memory_regions = ARRAY_SIZE(config.mem_regions),
 		.num_irqchips = ARRAY_SIZE(config.irqchips),
 		.num_pci_devices = ARRAY_SIZE(config.pci_devices),
-		.vpci_irq_base = 90, /* Not include 32 base */
+		.vpci_irq_base = 200, /* Not include 32 base */
 	},
 
 	.cpus = {
@@ -79,16 +78,23 @@ struct {
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_IO | JAILHOUSE_MEM_ROOTSHARED,
 		},
-		/* UART2*/ {
-			.phys_start = 0x5a080000,
-			.virt_start = 0x5a080000,
+		/* Cortex-M4 LPUART */ {
+			.phys_start = 0x37220000,
+			.virt_start = 0x37220000,
 			.size = 0x1000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_IO,
 		},
-		/* UART2_LPCG*/ {
-			.phys_start = 0x5a480000,
-			.virt_start = 0x5a480000,
+		/* Cortex-M4 INTMUX */ {
+			.phys_start = 0x37400000,
+			.virt_start = 0x37400000,
+			.size = 0x1000,
+			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
+				JAILHOUSE_MEM_IO,
+		},
+		/* Cortex-M4 LPUART LPCG */ {
+			.phys_start = 0x37620000,
+			.virt_start = 0x37620000,
 			.size = 0x1000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_IO,
@@ -112,18 +118,18 @@ struct {
 			.virt_start = 0x5d1d0000,
 			.size = 0x10000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
-				JAILHOUSE_MEM_IO,
+				JAILHOUSE_MEM_IO | JAILHOUSE_MEM_ROOTSHARED,
 		},
 		/* RAM: Top at 4GB Space */ {
-			.phys_start = 0xdf700000,
-			.virt_start = 0xdf700000,
+			.phys_start = 0xa1700000,
+			.virt_start = 0xa1700000,
 			.size = 0x1e000000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_EXECUTE | JAILHOUSE_MEM_DMA |
 				JAILHOUSE_MEM_LOADABLE,
 		},
-		/* RAM: Top at 4GB Space */ {
-			.phys_start = 0xfdb00000,
+		/* loader */ {
+			.phys_start = 0xbfb00000,
 			.virt_start = 0,
 			.size = 0x10000, /* 64KB */
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
@@ -138,32 +144,33 @@ struct {
 	},
 
 	.irqchips = {
-		/* IVSHMEM */ {
+		/* Cortex-M4 LPUART */ {
 			.address = 0x51a00000,
-			.pin_base = 96,
+			.pin_base = 32,
 			.pin_bitmap = {
-				0xf << (90 + 32 - 96)
+				((1 << 8) | (1 << 9) | (1 << 10) | (1 << 11) |
+				(1 << 12) | (1 << 13) | (1 << 14) | (1 << 15))
 			},
 		},
 		/* MU2_A */ {
 			.address = 0x51a00000,
-			.pin_base = 192,
+			.pin_base = 96,
 			.pin_bitmap = {
-				(1 << (178 + 32 - 192))
+				(1 << (88 + 32 - 96))
 			},
 		},
-		/* sdhc1 */ {
+		/* SDHC1 */ {
 			.address = 0x51a00000,
-			.pin_base = 256,
+			.pin_base = 160,
 			.pin_bitmap = {
-				(1 << (232 + 32 - 256))
+				(1 << (138 + 32 - 160))
 			},
 		},
-		/* uart2 */ {
+		/* IVSHMEM */ {
 			.address = 0x51a00000,
-			.pin_base = 352,
+			.pin_base = 224,
 			.pin_bitmap = {
-				(1 << (347 + 32 - 352))
+				(0xf << (200 + 32 - 224))
 			},
 		},
 	},
