@@ -74,7 +74,8 @@ struct {
 			.phys_start = 0xbf90e000,
 			.virt_start = 0xbf90e000,
 			.size = 0x2000,
-			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_ROOTSHARED,
+			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
+				JAILHOUSE_MEM_ROOTSHARED,
 		},
 		/* UART1 */ {
 			.phys_start = 0x5a060000,
@@ -115,7 +116,7 @@ struct {
 			.bdf = 0 << 3,
 			.bar_mask = JAILHOUSE_IVSHMEM_BAR_MASK_INTX,
 			.shmem_regions_start = 0,
-			.shmem_dev_id = 1,
+			.shmem_dev_id = 2,
 			.shmem_peers = 1,
 			.shmem_protocol = JAILHOUSE_SHMEM_PROTO_UNDEFINED,
 		},
