@@ -74,6 +74,7 @@ int smccc_discover(void)
 
 static void trust_dispatch(struct trap_context *ctx)
 {
+#ifdef __aarch64__
 	register unsigned long x0 asm("x0") = ctx->regs[0];
 	register unsigned long x1 asm("x1") = ctx->regs[1];
 	register unsigned long x2 asm("x2") = ctx->regs[2];
@@ -94,6 +95,7 @@ static void trust_dispatch(struct trap_context *ctx)
 	ctx->regs[1] = x1;
 	ctx->regs[2] = x2;
 	ctx->regs[3] = x3;
+#endif
 }
 
 static inline long handle_arch_features(u32 id)
