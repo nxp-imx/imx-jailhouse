@@ -34,7 +34,9 @@ union registers {
 
 #define ARM_PARKING_CODE		\
 	0xd503207f, /* 1: wfi  */	\
-	0x17ffffff, /*    b 1b */
+	0x17ffffff, /*    b 1b */	\
+	0xe320f003, /* 2: wfi  */	\
+	0xeafffffd, /*    b 2b */
 
 #define dmb(domain)	asm volatile("dmb " #domain "\n" : : : "memory")
 #define dsb(domain)	asm volatile("dsb " #domain "\n" : : : "memory")

@@ -15,11 +15,13 @@
 
 #define PSR_MODE_MASK	0xf
 #define PSR_MODE_EL0t	0x0
+#define PSR_MODE_SVC	0x3
 #define PSR_MODE_EL1t	0x4
 #define PSR_MODE_EL1h	0x5
 #define PSR_MODE_EL2t	0x8
 #define PSR_MODE_EL2h	0x9
 
+#define PSR_32_BIT	(1 << 4)
 #define PSR_F_BIT	(1 << 6)
 #define PSR_I_BIT	(1 << 7)
 #define PSR_A_BIT	(1 << 8)

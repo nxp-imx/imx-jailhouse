@@ -20,6 +20,9 @@
 
 void arm_cpu_reset(unsigned long pc)
 {
+	unsigned int cpu_mode = this_cpu_data()->public.cpu_mode;
+	u64 hcr_el2;
+
 	/* put the cpu in a reset state */
 	/* AARCH64_TODO: handle big endian support */
 	arm_write_sysreg(SPSR_EL2, RESET_PSR);
@@ -67,6 +70,16 @@ void arm_cpu_reset(unsigned long pc)
 	/* AARCH64_TODO: handle PMU registers */
 	/* AARCH64_TODO: handle debug registers */
 	/* AARCH64_TODO: handle system registers for AArch32 state */
+	if (cpu_mode == JAILHOUSE_CELL_AARCH32) {
+		arm_write_sysreg(SPSR_EL2, PSR_32_BIT | PSR_MODE_SVC);
+		arm_read_sysreg(HCR_EL2, hcr_el2);
+		hcr_el2 &= ~HCR_RW_BIT;
+		arm_write_sysreg(HCR_EL2, hcr_el2);
+	} else {
+		arm_read_sysreg(HCR_EL2, hcr_el2);
+		hcr_el2 |= HCR_RW_BIT;
+		arm_write_sysreg(HCR_EL2, hcr_el2);
+	}
 
 	arm_write_sysreg(ELR_EL2, pc);
 

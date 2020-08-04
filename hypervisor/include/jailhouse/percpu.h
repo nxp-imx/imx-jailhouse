@@ -59,6 +59,8 @@ struct public_per_cpu {
 	 *  host physical <-> guest physical memory mappings. */
 	bool flush_vcpu_caches;
 
+	unsigned int cpu_mode;
+
 	ARCH_PUBLIC_PERCPU_FIELDS;
 } __attribute__((aligned(PAGE_SIZE)));
 

@@ -32,7 +32,10 @@ void arm_cpu_park(void)
 	enter_cpu_off(cpu_public);
 	spin_unlock(&cpu_public->control_lock);
 
-	arm_cpu_reset(0);
+	if (cpu_public->cpu_mode == JAILHOUSE_CELL_AARCH32)
+		arm_cpu_reset(8);
+	else
+		arm_cpu_reset(0);
 	arm_paging_vcpu_init(&parking_pt);
 }
 
@@ -176,6 +179,7 @@ void arch_cell_reset(struct cell *cell)
 	 * starts at cpu_reset_address, defined in the cell configuration.
 	 */
 	public_per_cpu(first)->cpu_on_entry = cell->config->cpu_reset_address;
+	public_per_cpu(first)->cpu_mode = cell->config->flags & JAILHOUSE_CELL_AARCH32;
 	for_each_cpu_except(cpu, cell->cpu_set, first)
 		public_per_cpu(cpu)->cpu_on_entry = PSCI_INVALID_ADDRESS;
 
@@ -191,8 +195,10 @@ void arch_cell_destroy(struct cell *cell)
 	arm_cell_dcaches_flush(cell, DCACHE_INVALIDATE);
 
 	/* All CPUs are handed back to the root cell in suspended mode. */
-	for_each_cpu(cpu, cell->cpu_set)
+	for_each_cpu(cpu, cell->cpu_set) {
 		public_per_cpu(cpu)->cpu_on_entry = PSCI_INVALID_ADDRESS;
+		public_per_cpu(cpu)->cpu_mode = root_cell.config->flags & JAILHOUSE_CELL_AARCH32;
+	}
 
 	arm_paging_cell_destroy(cell);
 }
