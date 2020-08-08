@@ -13,6 +13,10 @@
  */
 
 /* also include from arm-common */
+
+#ifndef __ARM32_ASM_BITOPS__
+#define __ARM32_ASM_BITOPS__
+
 #include_next <asm/bitops.h>
 
 static inline int atomic_test_and_set_bit(int nr, volatile unsigned long *addr)
@@ -42,3 +46,4 @@ static inline int atomic_test_and_set_bit(int nr, volatile unsigned long *addr)
 
 	return !!(test);
 }
+#endif
