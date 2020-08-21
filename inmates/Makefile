@@ -32,9 +32,6 @@ KBUILD_CFLAGS := -g -Os -Wall -Wstrict-prototypes -Wtype-limits \
 		 -fno-common -fno-stack-protector -ffreestanding \
 		 -ffunction-sections \
 		 -D__LINUX_COMPILER_TYPES_H
-ifeq ($(SRCARCH),arm)
-KBUILD_CFLAGS += -mgeneral-regs-only
-endif
 ifneq ($(wildcard $(INC_CONFIG_H)),)
 KBUILD_CFLAGS += -include $(INC_CONFIG_H)
 endif
