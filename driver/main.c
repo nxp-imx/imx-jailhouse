@@ -42,6 +42,7 @@
 #endif
 #ifdef CONFIG_X86
 #include <asm/msr.h>
+#include <asm/apic.h>
 #endif
 
 #include "cell.h"
@@ -203,6 +204,12 @@ static long get_max_cpus(u32 cpu_set_size,
 	return -EINVAL;
 }
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,8,0)
+#define __get_vm_area(size, flags, start, end)			\
+	__get_vm_area_caller(size, flags, start, end,		\
+			     __builtin_return_address(0))
+#endif
+
 void *jailhouse_ioremap(phys_addr_t phys, unsigned long virt,
 			unsigned long size)
 {
@@ -254,7 +261,13 @@ static void enter_hypervisor(void *info)
 
 #if defined(CONFIG_X86) && LINUX_VERSION_CODE >= KERNEL_VERSION(4,0,0)
 	/* on Intel, VMXE is now on - update the shadow */
-	cr4_init_shadow();
+	if (boot_cpu_has(X86_FEATURE_VMX)) {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,5,0)
+		cr4_set_bits_irqsoff(X86_CR4_VMXE);
+#else
+		cr4_set_bits(X86_CR4_VMXE);
+#endif
+	}
 #endif
 
 	atomic_inc(&call_done);
@@ -657,7 +670,13 @@ static void leave_hypervisor(void *info)
 
 #if defined(CONFIG_X86) && LINUX_VERSION_CODE >= KERNEL_VERSION(4,0,0)
 	/* on Intel, VMXE is now off - update the shadow */
-	cr4_init_shadow();
+	if (boot_cpu_has(X86_FEATURE_VMX)) {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,5,0)
+		cr4_clear_bits_irqsoff(X86_CR4_VMXE);
+#else
+		cr4_clear_bits(X86_CR4_VMXE);
+#endif
+	}
 #endif
 
 	atomic_inc(&call_done);
