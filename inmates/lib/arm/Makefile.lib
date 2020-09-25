@@ -39,6 +39,7 @@
 #
 
 -include $(GEN_CONFIG_MK)
+-include $(ALWAYS_COMPAT_MK)
 
 LINUXINCLUDE += -I$(INMATES_LIB)/include
 LINUXINCLUDE += -I$(INMATES_LIB)/../arm-common/include
