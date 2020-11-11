@@ -344,6 +344,7 @@ static enum mmio_result gicv3_handle_redist_access(void *arg,
 						   struct mmio_access *mmio)
 {
 	struct public_per_cpu *cpu_public = arg;
+	unsigned int mnt_irq = system_config->platform_info.arm.maintenance_irq;
 
 	switch (mmio->address) {
 	case GICR_TYPER:
@@ -364,15 +365,21 @@ static enum mmio_result gicv3_handle_redist_access(void *arg,
 	case GICR_SYNCR:
 		mmio->value = 0;
 		return MMIO_HANDLED;
-	case GICR_CTLR:
-	case GICR_STATUSR:
-	case GICR_WAKER:
 	case GICR_SGI_BASE + GICR_ISENABLER:
 	case GICR_SGI_BASE + GICR_ICENABLER:
 	case GICR_SGI_BASE + GICR_ISPENDR:
 	case GICR_SGI_BASE + GICR_ICPENDR:
 	case GICR_SGI_BASE + GICR_ISACTIVER:
 	case GICR_SGI_BASE + GICR_ICACTIVER:
+		if (this_cell() != cpu_public->cell) {
+			/* ignore access to foreign redistributors */
+			return MMIO_HANDLED;
+		}
+		mmio->value &= ~(SGI_MASK | (1 << mnt_irq));
+		break;
+	case GICR_CTLR:
+	case GICR_STATUSR:
+	case GICR_WAKER:
 	case REG_RANGE(GICR_SGI_BASE + GICR_IPRIORITYR, 8, 4):
 	case REG_RANGE(GICR_SGI_BASE + GICR_ICFGR, 2, 4):
 		if (this_cell() != cpu_public->cell) {
