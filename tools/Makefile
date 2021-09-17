@@ -104,10 +104,10 @@ endef
 
 targets += jailhouse.o ivshmem-demo.o
 
-$(obj)/jailhouse: $(obj)/jailhouse.o
+$(obj)/jailhouse: $(obj)/jailhouse.o FORCE
 	$(call if_changed,ld)
 
-$(obj)/ivshmem-demo: $(obj)/ivshmem-demo.o
+$(obj)/ivshmem-demo: $(obj)/ivshmem-demo.o FORCE
 	$(call if_changed,ld)
 
 CFLAGS_jailhouse-gcov-extract.o	:= -I$(src)/../hypervisor/include \
@@ -118,16 +118,16 @@ LDFLAGS_jailhouse-gcov-extract := -lgcov -fprofile-arcs
 targets += jailhouse-gcov-extract.o
 always-y += jailhouse-gcov-extract
 
-$(obj)/jailhouse-gcov-extract: $(obj)/jailhouse-gcov-extract.o
+$(obj)/jailhouse-gcov-extract: $(obj)/jailhouse-gcov-extract.o FORCE
 	$(call if_changed,ld)
 
-$(obj)/jailhouse-config-collect: $(src)/jailhouse-config-create $(src)/jailhouse-config-collect.tmpl
+$(obj)/jailhouse-config-collect: $(src)/jailhouse-config-create $(src)/jailhouse-config-collect.tmpl FORCE
 	$(call if_changed,gen_collect)
 
 targets += $(MAN8_PAGES)
 always-y +=  $(MAN8_PAGES)
 
-$(obj)/%.8: $(src)/%.8.in
+$(obj)/%.8: $(src)/%.8.in FORCE
 	$(call if_changed,gen_man)
 
 install-bin: $(BINARIES) $(DESTDIR)$(sbindir)
