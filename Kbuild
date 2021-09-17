@@ -60,6 +60,8 @@ subdir-ccflags-y := -Werror
 
 obj-m := driver/
 
+NOSTDINC_FLAGS += -nostdinc -isystem $(shell $(CC) -print-file-name=include)
+
 # Do not generate files by creating dependencies if we are cleaning up
 ifeq ($(filter %/Makefile.clean,$(MAKEFILE_LIST)),)
 
