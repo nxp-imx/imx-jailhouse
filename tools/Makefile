@@ -142,4 +142,6 @@ install-man8: $(MAN8_PAGES) $(DESTDIR)$(man8dir)
 install:: install-bin install-libexec install-data install-completion \
 	 install-man8
 
-.PHONY: install install-bin install-libexec install-data install-completion
+FORCE:
+
+.PHONY: install install-bin install-libexec install-data install-completion FORCE
