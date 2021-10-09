@@ -1,5 +1,5 @@
 /*
- * iMX8MM target - ivshmem-demo
+ * iMX8MP target - ivshmem-demo
  *
  * Copyright 2018 NXP
  *

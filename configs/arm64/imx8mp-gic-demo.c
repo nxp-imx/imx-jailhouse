@@ -1,5 +1,5 @@
 /*
- * iMX8MM target - gic-demo
+ * iMX8MP target - gic-demo
  *
  * Copyright 2018-2019 NXP
  *
