@@ -100,6 +100,7 @@ static int gicv2_cpu_init(struct per_cpu *cpu_data)
 	unsigned int mnt_irq = system_config->platform_info.arm.maintenance_irq;
 	u32 vtr, vmcr;
 	u32 cell_gicc_ctlr, cell_gicc_pmr;
+	u32 gicd_isacter;
 	unsigned int n;
 
 	/* Ensure all IPIs and the maintenance PPI are enabled. */
@@ -145,6 +146,10 @@ static int gicv2_cpu_init(struct per_cpu *cpu_data)
 	gicv2_clear_pending_irqs();
 
 	cpu_data->public.gicc_initialized = true;
+
+	/* Deactivate all active SGIs */
+	gicd_isacter = mmio_read32(gicd_base + GICD_ISACTIVER);
+	mmio_write32(gicd_base + GICD_ICACTIVER, gicd_isacter & 0xffff);
 
 	/*
 	 * Get the CPU interface ID for this cpu. It can be discovered by

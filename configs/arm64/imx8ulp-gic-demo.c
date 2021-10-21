@@ -1,5 +1,5 @@
 /*
- * iMX8MP target - gic-demo
+ * iMX8MM target - gic-demo
  *
  * Copyright 2018-2019 NXP
  *
@@ -30,21 +30,21 @@ struct {
 		.num_pci_devices = 0,
 
 		.console = {
-			.address = 0x30890000,
-			.type = JAILHOUSE_CON_TYPE_IMX,
+			.address = 0x293a0000,
+			.type = JAILHOUSE_CON_TYPE_IMX_LPUART,
 			.flags = JAILHOUSE_CON_ACCESS_MMIO |
 				 JAILHOUSE_CON_REGDIST_4,
 		},
 	},
 
 	.cpus = {
-		0x8,
+		0x2,
 	},
 
 	.mem_regions = {
 		/* UART2 */ {
-			.phys_start = 0x30890000,
-			.virt_start = 0x30890000,
+			.phys_start = 0x293a0000,
+			.virt_start = 0x293a0000,
 			.size = 0x1000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_IO | JAILHOUSE_MEM_ROOTSHARED,

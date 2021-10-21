@@ -1,10 +1,10 @@
 /*
- * iMX8MP target - ivshmem-demo
+ * i.MX8ULP Target
  *
- * Copyright 2018 NXP
+ * Copyright 2021 NXP
  *
  * Authors:
- *  Peng Fan <peng.fan@nxp.com>
+ *  Alice Guo <alice.guo@nxp.com>
  *
  * This work is licensed under the terms of the GNU GPL, version 2.  See
  * the COPYING file in the top-level directory.
@@ -23,26 +23,25 @@ struct {
 	.cell = {
 		.signature = JAILHOUSE_CELL_DESC_SIGNATURE,
 		.revision = JAILHOUSE_CONFIG_REVISION,
-		.name = "ivshmem-demo",
+		.name = "i.mx8ulp-ivshmem-demo",
 		.flags = JAILHOUSE_CELL_PASSIVE_COMMREG,
 
 		.cpu_set_size = sizeof(config.cpus),
 		.num_memory_regions = ARRAY_SIZE(config.mem_regions),
 		.num_irqchips = ARRAY_SIZE(config.irqchips),
 		.num_pci_devices = ARRAY_SIZE(config.pci_devices),
-		/* IVSHMEM_IRQ - 32 */
-		.vpci_irq_base = 76, /* Not include 32 base */
+		.vpci_irq_base = 167,
 
 		.console = {
-			.address = 0x30890000,
-			.type = JAILHOUSE_CON_TYPE_IMX,
+			.address = 0x293a0000,
+			.type = JAILHOUSE_CON_TYPE_IMX_LPUART,
 			.flags = JAILHOUSE_CON_ACCESS_MMIO |
 				 JAILHOUSE_CON_REGDIST_4,
 		},
 	},
 
 	.cpus = {
-		0x8,
+		0x1,
 	},
 
 	.mem_regions = {
@@ -58,7 +57,7 @@ struct {
 			.virt_start = 0xfd901000,
 			.size = 0x9000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
-				JAILHOUSE_MEM_ROOTSHARED,
+				 JAILHOUSE_MEM_ROOTSHARED,
 		},
 		{
 			.phys_start = 0xfd90a000,
@@ -71,7 +70,7 @@ struct {
 			.virt_start = 0xfd90c000,
 			.size = 0x2000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
-				JAILHOUSE_MEM_ROOTSHARED,
+				 JAILHOUSE_MEM_ROOTSHARED,
 		},
 		{
 			.phys_start = 0xfd90e000,
@@ -79,42 +78,42 @@ struct {
 			.size = 0x2000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_ROOTSHARED,
 		},
-		/* UART2 */ {
-			.phys_start = 0x30890000,
-			.virt_start = 0x30890000,
+		/* lpuart */ {
+			.phys_start = 0x293a0000,
+			.virt_start = 0x293a0000,
 			.size = 0x1000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
-				JAILHOUSE_MEM_IO | JAILHOUSE_MEM_ROOTSHARED,
+				 JAILHOUSE_MEM_IO | JAILHOUSE_MEM_ROOTSHARED,
 		},
-		/* RAM: start from the bottom of inmate memory */ {
+		/* RAM：start from the bottom of inmate memory in imx8ulp.c */ {
 			.phys_start = 0xc0000000,
 			.virt_start = 0,
-			.size = 0x00010000,
+			.size = 0x10000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
-				JAILHOUSE_MEM_EXECUTE | JAILHOUSE_MEM_LOADABLE,
+				 JAILHOUSE_MEM_EXECUTE | JAILHOUSE_MEM_LOADABLE,
 		},
 		/* communication region */ {
-			.virt_start = 0x80000000,
-			.size = 0x00001000,
+			.virt_start = 0x80000000, /* fixed value */
+			.size = 0x1000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
-				JAILHOUSE_MEM_COMM_REGION,
+				 JAILHOUSE_MEM_COMM_REGION,
 		},
 	},
 
 	.irqchips = {
 		/* GIC */ {
-			.address = 0x38800000,
-			.pin_base = 96,
+			.address = 0x2d400000,
+			.pin_base = 160,
 			.pin_bitmap = {
-				0x1 << (76 + 32 - 96) /* SPI 76 */
+				0, 0x1 << (167 + 32 - 160 - 32)
 			},
 		},
 	},
 
 	.pci_devices = {
-		{
+		{ /* IVSHMEM 0000:00:00.0 (demo) */
 			.type = JAILHOUSE_PCI_TYPE_IVSHMEM,
-			.domain = 2,
+			.domain = 0,
 			.bdf = 0 << 3,
 			.bar_mask = JAILHOUSE_IVSHMEM_BAR_MASK_INTX,
 			.shmem_regions_start = 0,

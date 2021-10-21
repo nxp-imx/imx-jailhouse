@@ -1,5 +1,5 @@
 /*
- * i.MX8MP Target
+ * i.MX8ULP Target
  *
  * Copyright 2018 NXP
  *
@@ -18,7 +18,7 @@
 struct {
 	struct jailhouse_system header;
 	__u64 cpus[1];
-	struct jailhouse_memory mem_regions[24];
+	struct jailhouse_memory mem_regions[23];
 	struct jailhouse_irqchip irqchips[3];
 	struct jailhouse_pci_device pci_devices[4];
 } __attribute__((packed)) config = {
@@ -31,39 +31,42 @@ struct {
 			.size =       0x00400000,
 		},
 		.debug_console = {
-			.address = 0x30890000,
+			.address = 0x293a0000,
 			.size = 0x1000,
 			.flags = JAILHOUSE_CON_ACCESS_MMIO |
 				 JAILHOUSE_CON_REGDIST_4,
-			.type = JAILHOUSE_CON_TYPE_IMX,
+			.type = JAILHOUSE_CON_TYPE_IMX_LPUART,
 		},
 		.platform_info = {
+			/*
+			 * .pci_mmconfig_base is fixed; if you change it,
+			 * update the value in mach.h
+			 * (PCI_CFG_BASE) and regenerate the inmate library
+			 */
 			.pci_mmconfig_base = 0xfd700000,
 			.pci_mmconfig_end_bus = 0,
 			.pci_is_virtual = 1,
-			.pci_domain = 2,
+			.pci_domain = 0,
 
 			.arm = {
 				.gic_version = 3,
-				.gicd_base = 0x38800000,
-				.gicr_base = 0x38880000,
+				.gicd_base = 0x2d400000,
+				.gicr_base = 0x2d440000,
 				.maintenance_irq = 25,
 			},
 		},
 		.root_cell = {
-			.name = "imx8mp",
-
-			.num_pci_devices = ARRAY_SIZE(config.pci_devices),
+			.name = "imx8ulp",
 			.cpu_set_size = sizeof(config.cpus),
 			.num_memory_regions = ARRAY_SIZE(config.mem_regions),
 			.num_irqchips = ARRAY_SIZE(config.irqchips),
-			/* gpt5/4/3/2 not used by root cell */
-			.vpci_irq_base = 51, /* Not include 32 base */
+			.num_pci_devices = ARRAY_SIZE(config.pci_devices),
+			.vpci_irq_base = 165, /* exclude 32 */
 		},
 	},
 
 	.cpus = {
-		0xf,
+		0x3,
 	},
 
 	.mem_regions = {
@@ -132,21 +135,14 @@ struct {
 		/* IO */ {
 			.phys_start = 0x00000000,
 			.virt_start = 0x00000000,
-			.size =	      0x38800000,
-			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
-				JAILHOUSE_MEM_IO,
-		},
-		/* IO */ {
-			.phys_start = 0x38900000,
-			.virt_start = 0x38900000,
-			.size =	      0x7700000,
+			.size =	      0x80000000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_IO,
 		},
 		/* RAM 00*/ {
-			.phys_start = 0x40000000,
-			.virt_start = 0x40000000,
-			.size = 0x80000000,
+			.phys_start = 0x80000000,
+			.virt_start = 0x80000000,
+			.size = 0x40000000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_EXECUTE,
 		},
@@ -170,31 +166,25 @@ struct {
 			.size = 0x2000000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE,
 		},
-		/* RAM04 */{
-			.phys_start = 0x100000000,
-			.virt_start = 0x100000000,
-			.size = 0xC0000000,
-			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE,
-		},
 	},
 
 	.irqchips = {
 		/* GIC */ {
-			.address = 0x38800000,
+			.address = 0x2d400000,
 			.pin_base = 32,
 			.pin_bitmap = {
 				0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
 			},
 		},
 		/* GIC */ {
-			.address = 0x38800000,
+			.address = 0x2d400000,
 			.pin_base = 160,
 			.pin_bitmap = {
 				0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
 			},
 		},
 		/* GIC */ {
-			.address = 0x38800000,
+			.address = 0x2d400000,
 			.pin_base = 288,
 			.pin_bitmap = {
 				0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
@@ -205,7 +195,7 @@ struct {
 	.pci_devices = {
 		{
 			.type = JAILHOUSE_PCI_TYPE_IVSHMEM,
-			.domain = 2,
+			.domain = 0,
 			.bdf = 2 << 3,
 			.bar_mask = JAILHOUSE_IVSHMEM_BAR_MASK_INTX,
 			.shmem_regions_start = 0,
@@ -216,7 +206,7 @@ struct {
 		},
 		{
 			.type = JAILHOUSE_PCI_TYPE_IVSHMEM,
-			.domain = 2,
+			.domain = 0,
 			.bdf = 3 << 3,
 			.bar_mask = JAILHOUSE_IVSHMEM_BAR_MASK_INTX,
 			.shmem_regions_start = 4,
@@ -227,7 +217,7 @@ struct {
 		},
 		{ /* IVSHMEM 0000:00:00.0 (demo) */
 			.type = JAILHOUSE_PCI_TYPE_IVSHMEM,
-			.domain = 2,
+			.domain = 0,
 			.bdf = 0 << 3,
 			.bar_mask = JAILHOUSE_IVSHMEM_BAR_MASK_INTX,
 			.shmem_regions_start = 8,
@@ -237,7 +227,7 @@ struct {
 		},
 		{ /* IVSHMEM 0000:00:01.0 (networking) */
 			.type = JAILHOUSE_PCI_TYPE_IVSHMEM,
-			.domain = 2,
+			.domain = 0,
 			.bdf = 1 << 3,
 			.bar_mask = JAILHOUSE_IVSHMEM_BAR_MASK_INTX,
 			.shmem_regions_start = 13,
