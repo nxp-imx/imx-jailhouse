@@ -22,6 +22,7 @@ void arm_cpu_reset(unsigned long pc, bool aarch32)
 {
 	u64 hcr_el2;
 	u64 fpexc32_el2;
+	union registers * volatile guest_regs = &this_cpu_data()->guest_regs;
 
 	/* put the cpu in a reset state */
 	/* AARCH64_TODO: handle big endian support */
@@ -30,7 +31,7 @@ void arm_cpu_reset(unsigned long pc, bool aarch32)
 	arm_write_sysreg(PMCR_EL0, 0);
 
 	/* wipe any other state to avoid leaking information accross cells */
-	memset(&this_cpu_data()->guest_regs, 0, sizeof(union registers));
+	memset(guest_regs, 0, sizeof(union registers));
 
 	/* AARCH64_TODO: wipe floating point registers */
 

@@ -23,9 +23,10 @@
 void arm_cpu_reset(unsigned long pc, bool aarch32)
 {
 	u32 sctlr;
+	union registers * volatile guest_regs = &this_cpu_data()->guest_regs;
 
 	/* Wipe all banked and usr regs */
-	memset(&this_cpu_data()->guest_regs, 0, sizeof(union registers));
+	memset(guest_regs, 0, sizeof(union registers));
 
 	arm_write_banked_reg(SP_usr, 0);
 	arm_write_banked_reg(SP_svc, 0);
