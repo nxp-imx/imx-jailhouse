@@ -1,7 +1,7 @@
 /*
  * i.MX8MQ Target
  *
- * Copyright 2017-2020 NXP
+ * Copyright 2017-2022 NXP
  *
  * Authors:
  *  Peng Fan <peng.fan@nxp.com>
@@ -57,7 +57,7 @@ struct {
 			.cpu_set_size = sizeof(config.cpus),
 			.num_memory_regions = ARRAY_SIZE(config.mem_regions),
 			.num_irqchips = ARRAY_SIZE(config.irqchips),
-			.vpci_irq_base = 51, /* Not include 32 base */
+			.vpci_irq_base = 81, /* Not include 32 base */
 		},
 	},
 

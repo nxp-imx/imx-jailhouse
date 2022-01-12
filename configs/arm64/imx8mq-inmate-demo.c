@@ -30,7 +30,7 @@ struct {
 		.num_memory_regions = ARRAY_SIZE(config.mem_regions),
 		.num_irqchips = ARRAY_SIZE(config.irqchips),
 		.num_pci_devices = ARRAY_SIZE(config.pci_devices),
-		.vpci_irq_base = 108,
+		.vpci_irq_base = 109, /* Not include 32 base */
 
 		.console = {
 			.address = 0x30860000,
@@ -104,7 +104,7 @@ struct {
 			.address = 0x38800000,
 			.pin_base = 128,
 			.pin_bitmap = {
-				0x1 << (108 + 32 - 128) /* SPI 109 */
+				0x1 << (109 + 32 - 128) /* SPI 109 */
 			},
 		},
 	},
