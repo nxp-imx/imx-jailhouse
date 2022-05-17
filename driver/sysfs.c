@@ -181,10 +181,19 @@ static struct attribute *cell_stats_attrs[] = {
 	NULL
 };
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,18,0)
+ATTRIBUTE_GROUPS(cell_stats);
+
+static struct kobj_type cell_stats_type = {
+	.sysfs_ops = &kobj_sysfs_ops,
+	.default_groups = cell_stats_groups,
+};
+#else
 static struct kobj_type cell_stats_type = {
 	.sysfs_ops = &kobj_sysfs_ops,
 	.default_attrs = cell_stats_attrs,
 };
+#endif
 
 static struct attribute *cpu_stats_attrs[] = {
 	&vmexits_total_cpu_attr.kattr.attr,
@@ -213,10 +222,18 @@ static struct attribute *cpu_stats_attrs[] = {
 	NULL
 };
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,18,0)
+ATTRIBUTE_GROUPS(cpu_stats);
+static struct kobj_type cell_cpu_type = {
+	.sysfs_ops = &kobj_sysfs_ops,
+	.default_groups = cpu_stats_groups,
+};
+#else
 static struct kobj_type cell_cpu_type = {
 	.sysfs_ops = &kobj_sysfs_ops,
 	.default_attrs = cpu_stats_attrs,
 };
+#endif
 
 static int print_cpumask(char *buf, size_t size, cpumask_t *mask, bool as_list)
 {
@@ -343,11 +360,20 @@ static struct attribute *cell_attrs[] = {
 	NULL,
 };
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,18,0)
+ATTRIBUTE_GROUPS(cell);
+static struct kobj_type cell_type = {
+	.release = jailhouse_cell_kobj_release,
+	.sysfs_ops = &kobj_sysfs_ops,
+	.default_groups = cell_groups,
+};
+#else
 static struct kobj_type cell_type = {
 	.release = jailhouse_cell_kobj_release,
 	.sysfs_ops = &kobj_sysfs_ops,
 	.default_attrs = cell_attrs,
 };
+#endif
 
 static struct cell_cpu *find_cell_cpu(struct cell *cell, unsigned int cpu)
 {
