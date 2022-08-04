@@ -141,9 +141,9 @@ struct {
 				JAILHOUSE_MEM_EXECUTE,
 		},
 		/* Inmate memory */{
-			.phys_start = 0xc0000000,
-			.virt_start = 0xc0000000,
-			.size = 0x3d700000,
+			.phys_start = 0xd0000000,
+			.virt_start = 0xd0000000,
+			.size = 0x2d700000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_EXECUTE,
 		},
