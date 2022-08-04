@@ -86,7 +86,7 @@ struct {
 				 JAILHOUSE_MEM_IO | JAILHOUSE_MEM_ROOTSHARED,
 		},
 		/* RAM：start from the bottom of inmate memory in imx93.c */ {
-			.phys_start = 0xc0000000,
+			.phys_start = 0xd0000000,
 			.virt_start = 0,
 			.size = 0x10000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
