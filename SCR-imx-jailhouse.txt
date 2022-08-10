@@ -1,0 +1,8 @@
+Package:                     imx-jailhouse.git
+Outgoing License:            GPL-2.0 
+License File:                COPYING
+Type of Content:             source
+Description and comments:    A partitioning Hypervisor based on Linux
+Release Location:            https://source.codeaurora.org/external/imx/imx-jailhouse
+Origin:                      NXP (GPL-2.0)
+                             Siemens AG (GPL-2.0) - https://github.com/siemens/jailhouse
