@@ -120,6 +120,11 @@ int main(int argc, char *argv[])
 	snprintf(sysfs_path, sizeof(sysfs_path),
 		 "/sys/class/uio/%s/device/msi_irqs", uio_devname);
 	has_msix = access(sysfs_path, R_OK) == 0;
+	/*
+	 * With 6.1 kernel, even no msi, the sysfs interface is created, so
+	 * accessing this directory not work anymore, so hardcode to 0
+	 */
+	has_msix = 0;
 
 	offset = 0;
 	size = uio_read_mem_size(uio_devname, 0);
