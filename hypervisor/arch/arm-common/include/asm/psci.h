@@ -26,6 +26,7 @@
 
 /* PSCI v1.0 interface */
 #define PSCI_1_0_FN_FEATURES		PSCI_0_2_FN(10)
+#define PSCI_1_0_FN64_SYSTEM_SUSPEND	PSCI_0_2_FN64(14)
 
 /* v0.1 function IDs as used by U-Boot */
 #define PSCI_CPU_OFF_V0_1_UBOOT		0x95c1ba5f

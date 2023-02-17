@@ -175,10 +175,42 @@ static void gicv3_clear_pending_irqs(void)
 	}
 }
 
+static void gicv3_vcpu_suspend(struct per_cpu *cpu_data)
+{
+	void *gicr = cpu_data->public.gicr.base + GICR_SGI_BASE;
+	u32 ich_vmcr;
+
+	arm_read_sysreg(ICH_VMCR_EL2, ich_vmcr);
+	cpu_data->ich_vmcr = ich_vmcr;
+	cpu_data->gicr_isenabler = mmio_read32(gicr + GICR_ISENABLER);
+}
+
+static void gicv3_vcpu_resume(struct per_cpu *cpu_data)
+{
+	void *gicr = cpu_data->public.gicr.base + GICR_SGI_BASE;
+
+	mmio_write32(gicr + GICR_ISENABLER, cpu_data->gicr_isenabler);
+
+	arm_write_sysreg(ICH_VMCR_EL2, cpu_data->ich_vmcr);
+}
+
 static void gicv3_cpu_reset(struct per_cpu *cpu_data)
 {
 	unsigned int mnt_irq = system_config->platform_info.arm.maintenance_irq;
 	void *gicr = cpu_data->public.gicr.base + GICR_SGI_BASE;
+
+#if 1
+	if (this_cell()->resuming) {
+		this_cell()->resuming = false;
+		gicv3_vcpu_resume(cpu_data);
+		return;
+	} else if (this_cell()->suspending) {
+		gicv3_vcpu_suspend(cpu_data);
+		this_cell()->suspending = false;
+		this_cell()->suspended = true;
+		return;
+	}
+#endif
 
 	gicv3_clear_pending_irqs();
 
@@ -473,6 +505,7 @@ bool gicv3_handle_sgir_write(u64 sgir)
 		       | SGIR_TO_MPIDR_AFFINITY(sgir, 1));
 	sgi.id = sgir >> ICC_SGIR_IRQN_SHIFT & 0xf;
 
+	//printk("%x->%x: %d\n", this_cpu_id(), sgi.targets, sgi.id);
 	gic_handle_sgir_write(&sgi);
 
 	return true;

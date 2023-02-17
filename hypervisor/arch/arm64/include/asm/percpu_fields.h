@@ -12,5 +12,10 @@
 
 #define ARCH_PERCPU_FIELDS						\
 	ARM_PERCPU_FIELDS						\
+	unsigned int gicr_isenabler;					\
+	unsigned int ich_vmcr;						\
 	unsigned long id_aa64mmfr0;					\
+	bool suspended;							\
+	bool suspending;						\
+	bool resuming;							\
 	bool sdei_event;

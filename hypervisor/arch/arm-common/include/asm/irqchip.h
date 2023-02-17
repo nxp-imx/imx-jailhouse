@@ -13,7 +13,7 @@
 #ifndef _JAILHOUSE_ASM_IRQCHIP_H
 #define _JAILHOUSE_ASM_IRQCHIP_H
 
-#define MAX_PENDING_IRQS	256
+#define MAX_PENDING_IRQS	4096
 
 #include <jailhouse/cell.h>
 #include <jailhouse/mmio.h>

@@ -13,10 +13,56 @@
  */
 
 #include <jailhouse/control.h>
+#include <jailhouse/printk.h>
 #include <asm/control.h>
 #include <asm/psci.h>
 #include <asm/smccc.h>
 #include <asm/traps.h>
+
+long psci_emulate_cell_resume(void);
+long psci_emulate_cell_resume(void)
+{
+	//struct public_per_cpu *target_data;
+	long result;
+
+	//target_data = public_per_cpu(0);
+	struct public_per_cpu *target_data = this_cpu_public();
+
+	spin_lock(&target_data->control_lock);
+
+	if (target_data->wait_for_poweron) {
+		target_data->cpu_on_entry = this_cell()->resume_entry;
+		target_data->cpu_on_context = 0;
+		target_data->reset = true;
+		target_data->wait_for_poweron = false;
+
+		result = PSCI_SUCCESS;
+	} else {
+		result = PSCI_ALREADY_ON;
+	}
+
+	arch_send_event(target_data);
+
+	spin_unlock(&target_data->control_lock);
+
+#if 0
+	if (target_data->flush_vcpu_caches) {
+		target_data->flush_vcpu_caches = false;
+		arm_paging_vcpu_flush_tlbs();
+	}
+
+	/*
+	 * The unlock has memory barrier semantic on ARM v7 and v8. Therefore
+	 * the changes to target_data will be visible when sending the kick
+	 * below.
+	 */
+	spin_unlock(&target_data->control_lock);
+
+	arm_cpu_reset(target_data->cpu_on_entry,
+		      !!(this_cell()->config->flags & JAILHOUSE_CELL_AARCH32));
+#endif
+	return result;
+}
 
 static long psci_emulate_cpu_on(struct trap_context *ctx)
 {
@@ -83,6 +129,7 @@ static long psci_emulate_features_info(struct trap_context *ctx)
 	case PSCI_0_2_FN_AFFINITY_INFO:
 	case PSCI_0_2_FN64_AFFINITY_INFO:
 	case PSCI_1_0_FN_FEATURES:
+	case PSCI_1_0_FN64_SYSTEM_SUSPEND:
 	case SMCCC_VERSION:
 		return PSCI_SUCCESS;
 
@@ -130,6 +177,16 @@ long psci_dispatch(struct trap_context *ctx)
 
 	case PSCI_1_0_FN_FEATURES:
 		return psci_emulate_features_info(ctx);
+
+	case PSCI_1_0_FN64_SYSTEM_SUSPEND:
+#if 1
+		this_cell()->resume_entry = ctx->regs[1];
+		this_cell()->suspending = true;
+		arm_cpu_park();
+#else
+		asm volatile("wfi;isb;nop;\r\n");
+#endif
+		return PSCI_SUCCESS;
 
 	default:
 		return PSCI_NOT_SUPPORTED;

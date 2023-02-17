@@ -38,6 +38,9 @@ static enum trap_return handle_hvc(struct trap_context *ctx)
 	unsigned long *regs = ctx->regs;
 	unsigned long code = regs[0];
 
+	if (ESR_ISS(ctx->esr) <= 0x3 )
+		return TRAP_HANDLED;
+
 	if (ESR_ISS(ctx->esr) != JAILHOUSE_HVC_CODE)
 		return TRAP_FORBIDDEN;
 

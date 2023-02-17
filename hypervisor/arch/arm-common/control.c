@@ -136,6 +136,7 @@ void arch_handle_sgi(u32 irqn, unsigned int count_event)
  * Handle the maintenance interrupt, the rest is injected into the cell.
  * Return true when the IRQ has been handled by the hyp.
  */
+long psci_emulate_cell_resume(void);
 bool arch_handle_phys_irq(u32 irqn, unsigned int count_event)
 {
 	struct public_per_cpu *cpu_public = this_cpu_public();
@@ -150,6 +151,12 @@ bool arch_handle_phys_irq(u32 irqn, unsigned int count_event)
 
 	cpu_public->stats[JAILHOUSE_CPU_STAT_VMEXITS_VIRQ] += count_event;
 	irqchip_set_pending(cpu_public, irqn);
+
+	if (this_cell()->suspended) {
+		psci_emulate_cell_resume();
+		this_cell()->suspended = false;
+		this_cell()->resuming = true;
+	}
 
 	return false;
 }

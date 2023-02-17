@@ -69,6 +69,11 @@ struct cell {
 	unsigned int num_mmio_regions;
 	/** Maximum number of MMIO regions. */
 	unsigned int max_mmio_regions;
+
+	bool suspended;
+	bool suspending;
+	bool resuming;
+	unsigned long resume_entry;
 };
 
 extern struct cell root_cell;
