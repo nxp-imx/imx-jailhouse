@@ -1,7 +1,7 @@
 /*
- * iMX8MM target - linux-demo
+ * iMX8MM target - zephyr-demo
  *
- * Copyright 2019 NXP
+ * Copyright 2023 NXP
  *
  * Authors:
  *  Peng Fan <peng.fan@nxp.com>
