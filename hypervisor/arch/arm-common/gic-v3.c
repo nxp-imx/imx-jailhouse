@@ -599,8 +599,16 @@ static int gicv3_inject_irq(u16 irq_id, u16 sender)
 		 * A strict phys->virt id mapping is used for SPIs, so this test
 		 * should be sufficient.
 		 */
-		if ((u32)lr == irq_id)
+		if ((u32)lr == irq_id) {
+			/* if interrupt is active set pending bit. */
+			if ((lr & ICH_LR_PENDACTIVE) == ICH_LR_ACTIVE) {
+				lr |= ICH_LR_GROUP_BIT;
+				lr |= ICH_LR_PENDING;
+				gicv3_write_lr(n, lr);
+				return 0;
+			}
 			return -EEXIST;
+		}
 	}
 
 	if (free_lr == -1)
