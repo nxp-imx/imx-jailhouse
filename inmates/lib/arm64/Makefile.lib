@@ -54,7 +54,11 @@ define DECLARE_TARGETS =
 endef
 
 # prevent deleting intermediate files which would cause rebuilds
+ifneq ($(and $(filter notintermediate, $(.FEATURES)),$(filter-out 4.4,$(MAKE_VERSION))),)
+.NOTINTERMEDIATE: $(addprefix $(obj)/,$(targets))
+else
 .SECONDARY: $(addprefix $(obj)/,$(targets))
+endif
 
 .SECONDEXPANSION:
 $(obj)/%-linked.o: $(INMATES_LIB)/inmate.lds $$(addprefix $$(obj)/,$$($$*-y)) \

@@ -24,6 +24,12 @@ jailhouse-$(CONFIG_OF) += vpci_template.dtb.o
 
 targets += vpci_template.dtb vpci_template.dtb.S
 
+ifneq ($(and $(filter notintermediate, $(.FEATURES)),$(filter-out 4.4,$(MAKE_VERSION))),)
+.NOTINTERMEDIATE: \
+        $(obj)/vpci_template.dtb.S \
+        $(obj)/vpci_template.dtb
+else
 .SECONDARY: \
         $(obj)/vpci_template.dtb.S \
         $(obj)/vpci_template.dtb
+endif

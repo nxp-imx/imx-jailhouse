@@ -36,7 +36,11 @@ always-y += $(DTS:.dts=.dtb)
 targets += $(DTS:.dts=.dtb)
 
 # prevent deleting intermediate files which would cause rebuilds
+ifneq ($(and $(filter notintermediate, $(.FEATURES)),$(filter-out 4.4,$(MAKE_VERSION))),)
+.NOTINTERMEDIATE: $(addprefix $(obj)/,$(CONFIGS:.c=.o))
+else
 .SECONDARY: $(addprefix $(obj)/,$(CONFIGS:.c=.o))
+endif
 
 $(obj)/%.cell: $(obj)/%.o FORCE
 	$(call if_changed,objcopy)
