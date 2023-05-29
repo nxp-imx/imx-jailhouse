@@ -36,8 +36,14 @@ always-y += $(DTS:.dts=.dtb)
 targets += $(DTS:.dts=.dtb)
 
 # prevent deleting intermediate files which would cause rebuilds
+kernel_version = $(shell expr $(VERSION) \* 65536 + $(PATCHLEVEL) \* 256)
+kernel_v_6_3 = $(shell expr 6 \* 65536 + 3 \* 256)
+ifeq ($(shell expr $(kernel_version) \>= $(kernel_v_6_3)),1)
 ifneq ($(and $(filter notintermediate, $(.FEATURES)),$(filter-out 4.4,$(MAKE_VERSION))),)
 .NOTINTERMEDIATE: $(addprefix $(obj)/,$(CONFIGS:.c=.o))
+else
+.SECONDARY: $(addprefix $(obj)/,$(CONFIGS:.c=.o))
+endif
 else
 .SECONDARY: $(addprefix $(obj)/,$(CONFIGS:.c=.o))
 endif

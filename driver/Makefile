@@ -24,10 +24,18 @@ jailhouse-$(CONFIG_OF) += vpci_template.dtb.o
 
 targets += vpci_template.dtb vpci_template.dtb.S
 
+kernel_version = $(shell expr $(VERSION) \* 65536 + $(PATCHLEVEL) \* 256)
+kernel_v_6_3 = $(shell expr 6 \* 65536 + 3 \* 256)
+ifeq ($(shell expr $(kernel_version) \>= $(kernel_v_6_3)),1)
 ifneq ($(and $(filter notintermediate, $(.FEATURES)),$(filter-out 4.4,$(MAKE_VERSION))),)
 .NOTINTERMEDIATE: \
         $(obj)/vpci_template.dtb.S \
         $(obj)/vpci_template.dtb
+else
+.SECONDARY: \
+        $(obj)/vpci_template.dtb.S \
+        $(obj)/vpci_template.dtb
+endif
 else
 .SECONDARY: \
         $(obj)/vpci_template.dtb.S \
