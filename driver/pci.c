@@ -331,7 +331,12 @@ static bool create_vpci_of_overlay(struct jailhouse_system *config)
 	gic_phandle = gic->phandle;
 
 	of_node_put(gic);
-
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6,6,0)
+	if (of_overlay_fdt_apply(__dtb_vpci_template_begin,
+			__dtb_vpci_template_end - __dtb_vpci_template_begin,
+			&overlay_id, NULL) < 0)
+		return false;
+#else /* < 6.6.0 */
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,17,0)
 	if (of_overlay_fdt_apply(__dtb_vpci_template_begin,
 			__dtb_vpci_template_end - __dtb_vpci_template_begin,
@@ -353,6 +358,7 @@ static bool create_vpci_of_overlay(struct jailhouse_system *config)
 	if (of_overlay_apply(overlay, &overlay_id) < 0)
 		goto out_compat;
 #endif /* < 4.17 */
+#endif /* < 6.6.0 */
 
 	of_changeset_init(&overlay_changeset);
 
