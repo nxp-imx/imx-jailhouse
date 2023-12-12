@@ -5,6 +5,9 @@
  *
  * This work is licensed under the terms of the GNU GPL, version 2.  See
  * the COPYING file in the top-level directory.
+ *
+ * Inmate/root Linux:
+ * ivshmem-demo -d /dev/uio0 -t 1
  */
 
 #include <jailhouse/types.h>
@@ -28,7 +31,7 @@ struct {
 		.num_memory_regions = ARRAY_SIZE(config.mem_regions),
 		.num_irqchips = ARRAY_SIZE(config.irqchips),
 		.num_pci_devices = ARRAY_SIZE(config.pci_devices),
-		.vpci_irq_base = 345,
+		.vpci_irq_base = 260,
 
 		.console = {
 			.address = 0x44380000,
@@ -39,40 +42,40 @@ struct {
 	},
 
 	.cpus = {
-		0x1,
+		0x20,
 	},
 
 	.mem_regions = {
 		/* IVSHMEM shared memory regions (demo) */
 		{
-			.phys_start = 0xfd900000,
-			.virt_start = 0xfd900000,
+			.phys_start = 0xff900000,
+			.virt_start = 0xff900000,
 			.size = 0x1000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_ROOTSHARED,
 		},
 		{
-			.phys_start = 0xfd901000,
-			.virt_start = 0xfd901000,
+			.phys_start = 0xff901000,
+			.virt_start = 0xff901000,
 			.size = 0x9000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				 JAILHOUSE_MEM_ROOTSHARED,
 		},
 		{
-			.phys_start = 0xfd90a000,
-			.virt_start = 0xfd90a000,
+			.phys_start = 0xff90a000,
+			.virt_start = 0xff90a000,
 			.size = 0x2000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_ROOTSHARED,
 		},
 		{
-			.phys_start = 0xfd90c000,
-			.virt_start = 0xfd90c000,
+			.phys_start = 0xff90c000,
+			.virt_start = 0xff90c000,
 			.size = 0x2000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				 JAILHOUSE_MEM_ROOTSHARED,
 		},
 		{
-			.phys_start = 0xfd90e000,
-			.virt_start = 0xfd90e000,
+			.phys_start = 0xff90e000,
+			.virt_start = 0xff90e000,
 			.size = 0x2000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_ROOTSHARED,
 		},
@@ -84,9 +87,9 @@ struct {
 				 JAILHOUSE_MEM_IO | JAILHOUSE_MEM_ROOTSHARED,
 		},
 		/* DRAM：start from the bottom of inmate memory in imx95.c */ {
-			.phys_start = 0xc0000000,
+			.phys_start = 0xff600000,
 			.virt_start = 0,
-			.size = 0x10000,
+			.size = 0x100000,
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				 JAILHOUSE_MEM_EXECUTE | JAILHOUSE_MEM_LOADABLE,
 		},
@@ -103,7 +106,7 @@ struct {
 			.address = 0x48000000,
 			.pin_base = 288,
 			.pin_bitmap = {
-				0, 0, 0x1 << (345 + 32 - 288 - 64), 0,
+				0x1 << (260 + 32 - 288),
 			},
 		},
 	},
@@ -116,7 +119,7 @@ struct {
 			.bar_mask = JAILHOUSE_IVSHMEM_BAR_MASK_INTX,
 			.shmem_regions_start = 0,
 			.shmem_dev_id = 1,
-			.shmem_peers = 1,
+			.shmem_peers = 3,
 			.shmem_protocol = JAILHOUSE_SHMEM_PROTO_UNDEFINED,
 		},
 	},
