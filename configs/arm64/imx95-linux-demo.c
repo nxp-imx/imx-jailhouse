@@ -33,7 +33,7 @@
 struct {
 	struct jailhouse_cell_desc cell;
 	__u64 cpus[1];
-	struct jailhouse_memory mem_regions[23];
+	struct jailhouse_memory mem_regions[24];
 	struct jailhouse_irqchip irqchips[2];
 	struct jailhouse_pci_device pci_devices[4];
 } __attribute__((packed)) config = {
@@ -165,6 +165,13 @@ struct {
 			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
 				JAILHOUSE_MEM_EXECUTE | JAILHOUSE_MEM_DMA |
 				JAILHOUSE_MEM_LOADABLE,
+		},
+		/* 7GB DDR RAM */ {
+			.phys_start = 0x100000000,
+			.virt_start = 0x100000000,
+			.size = 0x1c0000000,
+			.flags = JAILHOUSE_MEM_READ | JAILHOUSE_MEM_WRITE |
+				JAILHOUSE_MEM_EXECUTE | JAILHOUSE_MEM_LOADABLE,
 		},
 		/* communication region */ {
 			.virt_start = 0x80000000,
